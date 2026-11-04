@@ -178,7 +178,7 @@ public class GameController {
             int ran = rnd.nextInt(12);
             if (ran == 1) {
                 coin = new GoldCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else if (ran == 1) {
+            } else if (ran == 2) {
                 coin = new RainbowCoin(game.getWidth(), game.getHeight(), snek, obstacle);
             } else if (ran == 3) {
                 coin = new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle);
