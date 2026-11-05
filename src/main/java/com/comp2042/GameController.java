@@ -171,24 +171,25 @@ public class GameController {
         }
         game.addPoints(coin.getPoints());
     }
-
     private void newCoin() {
-        if (game.isPowerUp()) {
-            Random rnd = new Random();
-            int ran = rnd.nextInt(12);
-            if (ran == 1) {
-                coin = new GoldCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else if (ran == 2) {
-                coin = new RainbowCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else if (ran == 3) {
-                coin = new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else if (ran == 4 && obstacle.getObstacles().size() == 0) {
-                coin = new SilverCoin(game.getWidth(), game.getHeight(), snek, obstacle);
-            } else {
-                coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
-            }
-        } else {
-            coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
+        boolean powerUp = game.isPowerUp();
+        int roll = powerUp ? new Random().nextInt(12) : -1;
+        boolean hasObstacles = !obstacle.getObstacles().isEmpty();
+
+        CoinSpawnPolicy.CoinType type =
+                CoinSpawnPolicy.select(powerUp, roll, hasObstacles);
+
+        switch (type) {
+            case GOLD ->
+                    coin = new GoldCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case RAINBOW ->
+                    coin = new RainbowCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case BLUE ->
+                    coin = new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case SILVER ->
+                    coin = new SilverCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+            case REGULAR ->
+                    coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
         }
     }
 }
