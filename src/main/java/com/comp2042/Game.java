@@ -15,21 +15,29 @@ public class Game {
     private boolean noBorder;
 
     public Game(int x, int y, boolean powerUp, char difficulty) {
-        if (difficulty == 'E') {
-            speed = 8.5;
-            noBorder = true;
-        } else if (difficulty == 'N') {
-            speed = 8.5;
-            noBorder = false;
-        } else if (difficulty == 'H') {
-            speed = 13;
-            noBorder = false;
+        switch (difficulty) {
+            case 'E' -> {
+                speed = 8.5;
+                noBorder = true;
+            }
+            case 'N' -> {
+                speed = 8.5;
+                noBorder = false;
+            }
+            case 'H' -> {
+                speed = 13;
+                noBorder = false;
+            }
+            default -> throw new IllegalArgumentException(
+                    "Unsupported difficulty: " + difficulty
+            );
         }
+
         this.powerUp = powerUp;
         width = x;
         height = y;
         maxScore = x * y - 2;
-        this.powerUp = powerUp;
+
         if (height > 50) {
             multiplier = 10;
         } else {
