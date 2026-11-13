@@ -1,9 +1,6 @@
 package com.comp2042.model;
 
-import javafx.scene.paint.Color;
-
 public class Game {
-    private Color color = Color.web("feffe4");
     private int width;
     private int height;
     private int score;
@@ -68,10 +65,6 @@ public class Game {
     public void resetScore() {
         score = 0;
         scorePoints = 0;
-    }
-
-    public Color getColor() {
-        return color;
     }
 
     public double getMultiplier() {
