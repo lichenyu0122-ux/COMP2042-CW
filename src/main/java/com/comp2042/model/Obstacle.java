@@ -1,13 +1,10 @@
 package com.comp2042.model;
 
-import javafx.scene.paint.Color;
-
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Obstacle {
-    private Color color = Color.BLACK;
     private ArrayList<Point> obstacles = new ArrayList<>();
     private int x;
     private int y;
@@ -29,10 +26,6 @@ public class Obstacle {
             } while (coin.getPos().equals(p) || snek.getBody().contains(p) || snek.getHead().equals(p));
             obstacles.add(p);
         }
-    }
-
-    public Color getColor() {
-        return color;
     }
 
     public ArrayList<Point> getObstacles() {

@@ -1,8 +1,12 @@
 package com.comp2042.view;
 
 import com.comp2042.model.Coin;
+import com.comp2042.model.BlueCoin;
 import com.comp2042.model.Game;
+import com.comp2042.model.GoldCoin;
 import com.comp2042.model.Obstacle;
+import com.comp2042.model.RainbowCoin;
+import com.comp2042.model.SilverCoin;
 import com.comp2042.model.Snake;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -17,8 +21,14 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameView {
+
+    private static final Color GRID_COLOR = Color.web("feffe4");
+    private static final Color OBSTACLE_COLOR = Color.BLACK;
+    private final Map<Class<?>, Image> coinImages = new HashMap<>();
 
     public Canvas gridCanvas;
     public GraphicsContext gc;
@@ -95,10 +105,10 @@ public class GameView {
     }
 
     public void drawGrid(Coin coin, Snake snek, Obstacle obstacle, GraphicsContext gc, boolean a, int b) {
-        gc.setFill(game.getColor());
+        gc.setFill(GRID_COLOR);
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        gc.drawImage(coin.getImage(), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
+        gc.drawImage(coinImage(coin), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
 
         int bodyIndex = 0;
         for (Point point : snek.getBody()) {
@@ -108,17 +118,17 @@ public class GameView {
 
         drawHead(snek);
 
-        gc.setFill(obstacle.getColor());
+        gc.setFill(OBSTACLE_COLOR);
         for (Point point : obstacle.getObstacles()) {
             gc.fillRect(point.x * game.getMultiplier() * fullScale, point.y * game.getMultiplier() * fullScale, game.getMultiplier() * fullScale, game.getMultiplier() * fullScale);
         }
     }
 
     private void drawGrid(Coin coin, Snake snek, GraphicsContext gc) {
-        gc.setFill(game.getColor());
+        gc.setFill(GRID_COLOR);
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        gc.drawImage(coin.getImage(), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
+        gc.drawImage(coinImage(coin), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
 
         int bodyIndex = 0;
         for (Point point : snek.getBody()) {
@@ -127,6 +137,22 @@ public class GameView {
         }
 
         drawHead(snek);
+    }
+
+    private Image coinImage(Coin coin) {
+        return coinImages.computeIfAbsent(coin.getClass(), type -> {
+            String sprite = "redcoin.png";
+            if (type == GoldCoin.class) {
+                sprite = "goldcoin.png";
+            } else if (type == SilverCoin.class) {
+                sprite = "silvercoin.png";
+            } else if (type == BlueCoin.class) {
+                sprite = "bluecoin.png";
+            } else if (type == RainbowCoin.class) {
+                sprite = "rainbowcoin.png";
+            }
+            return new Image("resources/views/res/" + sprite);
+        });
     }
 
     private void drawHead(Snake snek) {
