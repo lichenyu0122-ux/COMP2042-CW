@@ -66,5 +66,6 @@ class CoinSpawnPolicyTest {
     void powerUpRollsSelectNewEffects() {
         assertEquals(CoinSpawnPolicy.CoinType.SHIELD, CoinSpawnPolicy.select(true, 5, false));
         assertEquals(CoinSpawnPolicy.CoinType.SLOW, CoinSpawnPolicy.select(true, 6, false));
+        assertEquals(CoinSpawnPolicy.CoinType.POISON, CoinSpawnPolicy.select(true, 7, false));
     }
 }

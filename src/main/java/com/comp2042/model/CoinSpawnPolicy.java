@@ -9,7 +9,8 @@ public final class CoinSpawnPolicy {
         BLUE,
         SILVER,
         SHIELD,
-        SLOW
+        SLOW,
+        POISON
     }
 
     private CoinSpawnPolicy() {
@@ -27,6 +28,7 @@ public final class CoinSpawnPolicy {
             case 4 -> hasObstacles ? CoinType.REGULAR : CoinType.SILVER;
             case 5 -> CoinType.SHIELD;
             case 6 -> CoinType.SLOW;
+            case 7 -> CoinType.POISON;
             default -> CoinType.REGULAR;
         };
     }

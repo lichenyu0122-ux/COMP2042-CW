@@ -92,7 +92,7 @@ public class Snake {
     }
 
     public boolean ateCoin(Coin coin) {
-        if (!head.equals(coin.getPos())) {
+        if (!head.equals(coin.getPos()) || coin instanceof PoisonCoin) {
             body.remove(0);
         }
         return head.equals(coin.getPos());

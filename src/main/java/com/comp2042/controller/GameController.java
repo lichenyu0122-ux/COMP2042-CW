@@ -12,6 +12,7 @@ import com.comp2042.model.SilverCoin;
 import com.comp2042.model.Snake;
 import com.comp2042.model.ShieldCoin;
 import com.comp2042.model.SlowCoin;
+import com.comp2042.model.PoisonCoin;
 import com.comp2042.view.GameView;
 import com.comp2042.view.ViewManager;
 import javafx.animation.Animation;
@@ -163,7 +164,7 @@ public class GameController {
     private void newCoin() {
         Snake snek = session.snake();
         boolean powerUp = game.isPowerUp();
-        int roll = powerUp ? new Random().nextInt(12) : -1;
+        int roll = powerUp ? new Random().nextInt(20) : -1;
         boolean hasObstacles = !obstacle.getObstacles().isEmpty();
 
         CoinSpawnPolicy.CoinType type =
@@ -182,6 +183,8 @@ public class GameController {
                     session.replaceCoin(new ShieldCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case SLOW ->
                     session.replaceCoin(new SlowCoin(game.getWidth(), game.getHeight(), snek, obstacle));
+            case POISON ->
+                    session.replaceCoin(new PoisonCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case REGULAR ->
                     session.replaceCoin(new Coin(game.getWidth(), game.getHeight(), snek, obstacle));
         }

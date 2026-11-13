@@ -6,6 +6,8 @@ import java.util.Random;
 public class Coin {
     private Point pos;
 
+    protected Coin(Point position) { pos = new Point(position); }
+
     public Coin(int x, int y, Snake snek, Obstacle obstacle) {
         int tx;
         int ty;

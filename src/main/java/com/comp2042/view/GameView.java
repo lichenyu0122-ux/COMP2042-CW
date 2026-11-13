@@ -11,6 +11,7 @@ import com.comp2042.model.SilverCoin;
 import com.comp2042.model.Snake;
 import com.comp2042.model.ShieldCoin;
 import com.comp2042.model.SlowCoin;
+import com.comp2042.model.PoisonCoin;
 import com.comp2042.model.EffectManager;
 import com.comp2042.model.EffectType;
 import javafx.scene.Scene;
@@ -163,8 +164,9 @@ public class GameView {
         double x = coin.getPos().x * game.getMultiplier() * fullScale;
         double y = coin.getPos().y * game.getMultiplier() * fullScale;
         double size = (game.getMultiplier() - 3) * fullScale;
-        if (coin instanceof ShieldCoin || coin instanceof SlowCoin) {
-            gc.setFill(coin instanceof ShieldCoin ? Color.DEEPSKYBLUE : Color.ORANGE);
+        if (coin instanceof ShieldCoin || coin instanceof SlowCoin || coin instanceof PoisonCoin) {
+            gc.setFill(coin instanceof ShieldCoin ? Color.DEEPSKYBLUE
+                    : coin instanceof SlowCoin ? Color.ORANGE : Color.PURPLE);
             gc.fillOval(x, y, size, size);
         } else gc.drawImage(coinImage(coin), x, y, size, size);
     }

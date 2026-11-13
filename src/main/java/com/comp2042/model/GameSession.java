@@ -54,6 +54,10 @@ public final class GameSession {
 
     /** Applies the picked-up item after movement, so it keeps its full tick duration. */
     public void collectCoin() {
+        if (coin instanceof PoisonCoin) {
+            snake.shrink(2);
+            return;
+        }
         if (coin instanceof ShieldCoin) effects.activate(PowerUpFactory.create(EffectType.SHIELD));
         else if (coin instanceof SlowCoin) effects.activate(PowerUpFactory.create(EffectType.SLOW));
         else if (coin instanceof BlueCoin) effects.activate(PowerUpFactory.create(EffectType.GHOST));
