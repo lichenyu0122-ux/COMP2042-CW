@@ -29,6 +29,20 @@ class GameScoringTest {
     }
 
     @Test
+    void resetRestoresOriginalWinThreshold() {
+        Game game = new Game(2, 2, false, 'N');
+        game.decMaxScore(2);
+        game.incScore();
+        assertTrue(game.gameWon());
+
+        game.resetScore();
+        game.incScore();
+        assertFalse(game.gameWon());
+        game.incScore();
+        assertTrue(game.gameWon());
+    }
+
+    @Test
     void gameWonBecomesTrueAtMaximumScore() {
         Game game = new Game(2, 2, false, 'N');
 
