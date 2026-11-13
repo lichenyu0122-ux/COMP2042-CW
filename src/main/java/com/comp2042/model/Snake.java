@@ -13,6 +13,8 @@ public class Snake {
     private boolean noBorder;
     private Obstacle obstacle;
     private int snakeDir = 270;
+    private Point previousHead;
+    private ArrayList<Point> previousBody;
 
     public Snake(int x, int y, boolean noBorder, Obstacle obstacle) {
         this.obstacle = obstacle;
@@ -24,6 +26,9 @@ public class Snake {
     }
 
     public void move(char dir) {
+        previousHead = new Point(head);
+        previousBody = new ArrayList<>();
+        body.forEach(point -> previousBody.add(new Point(point)));
         body.add(new Point(head));
         switch (dir) {
             case 'U':
@@ -111,6 +116,21 @@ public class Snake {
 
     public boolean getDead() {
         return dead;
+    }
+
+    /** Cancels a lethal move when a shield absorbs the collision. */
+    public void undoDeath() {
+        if (!dead || previousHead == null) throw new IllegalStateException("No lethal move to undo");
+        head.setLocation(previousHead);
+        body.clear();
+        previousBody.forEach(point -> body.add(new Point(point)));
+        dead = false;
+    }
+
+    public void shrink(int segments) {
+        if (segments < 0) throw new IllegalArgumentException("segments must be non-negative");
+        int removed = Math.min(segments, body.size());
+        body.subList(0, removed).clear();
     }
 
     public void ignoreBorders(boolean ign) {

@@ -9,6 +9,10 @@ import com.comp2042.model.Obstacle;
 import com.comp2042.model.RainbowCoin;
 import com.comp2042.model.SilverCoin;
 import com.comp2042.model.Snake;
+import com.comp2042.model.ShieldCoin;
+import com.comp2042.model.SlowCoin;
+import com.comp2042.model.EffectManager;
+import com.comp2042.model.EffectType;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -42,6 +46,7 @@ public class GameView {
     public Label gameOverLabel;
     public Label gameWonLabel;
     public Label scoreLabel;
+    public Label effectLabel;
     private boolean gameOverVis = false;
     private boolean gameWonVis = false;
 
@@ -87,6 +92,9 @@ public class GameView {
         scoreLabel.getStylesheets().add(css);
         scoreLabel.setFont(new Font("Arial", 20));
         scoreLabel.setVisible(true);
+        effectLabel = new Label("");
+        effectLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #174656; -fx-background-color: #feffe4;");
+        effectLabel.setMouseTransparent(true);
     }
 
     public void scaleToFullscreen(boolean fullScreen, Stage primaryStage, Obstacle obstacle, Snake snek, Coin coin) {
@@ -120,7 +128,7 @@ public class GameView {
         gc.setFill(GRID_COLOR);
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        gc.drawImage(coinImage(coin), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
+        drawCoin(coin);
 
         int bodyIndex = 0;
         for (Point point : snek.getBody()) {
@@ -140,7 +148,7 @@ public class GameView {
         gc.setFill(GRID_COLOR);
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
-        gc.drawImage(coinImage(coin), (coin.getPos().x * game.getMultiplier()) * fullScale, (coin.getPos().y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale - 3 * fullScale, game.getMultiplier() * fullScale - 3 * fullScale);
+        drawCoin(coin);
 
         int bodyIndex = 0;
         for (Point point : snek.getBody()) {
@@ -149,6 +157,16 @@ public class GameView {
         }
 
         drawHead(snek);
+    }
+
+    private void drawCoin(Coin coin) {
+        double x = coin.getPos().x * game.getMultiplier() * fullScale;
+        double y = coin.getPos().y * game.getMultiplier() * fullScale;
+        double size = (game.getMultiplier() - 3) * fullScale;
+        if (coin instanceof ShieldCoin || coin instanceof SlowCoin) {
+            gc.setFill(coin instanceof ShieldCoin ? Color.DEEPSKYBLUE : Color.ORANGE);
+            gc.fillOval(x, y, size, size);
+        } else gc.drawImage(coinImage(coin), x, y, size, size);
     }
 
     private Image coinImage(Coin coin) {
@@ -254,6 +272,18 @@ public class GameView {
 
     public void updateScoreLabel() {
         scoreLabel.setText(scoreText());
+    }
+
+    public void updateEffectLabel(EffectManager effects) {
+        StringBuilder text = new StringBuilder();
+        for (EffectType type : EffectType.values()) {
+            int remaining = effects.remaining(type);
+            if (remaining > 0) {
+                if (!text.isEmpty()) text.append("  |  ");
+                text.append(type.name()).append(' ').append(remaining);
+            }
+        }
+        effectLabel.setText(text.toString());
     }
 
     private String scoreText() {

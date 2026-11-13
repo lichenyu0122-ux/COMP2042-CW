@@ -10,6 +10,8 @@ import com.comp2042.model.Obstacle;
 import com.comp2042.model.RainbowCoin;
 import com.comp2042.model.SilverCoin;
 import com.comp2042.model.Snake;
+import com.comp2042.model.ShieldCoin;
+import com.comp2042.model.SlowCoin;
 import com.comp2042.view.GameView;
 import com.comp2042.view.ViewManager;
 import javafx.animation.Animation;
@@ -30,6 +32,7 @@ public class GameController {
 
     private final DirectionInput direction = new DirectionInput();
     private final Timeline animation;
+    private double rainbowBonus;
 
     public GameController(GameSession session, GameView gameView, ViewManager viewManager) {
         this.session = session;
@@ -49,25 +52,29 @@ public class GameController {
             return;
         } else {
 
-            if (direction.current() == KeyCode.LEFT) {
-                snek.move('L');
-            } else if (direction.current() == KeyCode.RIGHT) {
-                snek.move('R');
-            } else if (direction.current() == KeyCode.UP) {
-                snek.move('U');
-            } else if (direction.current() == KeyCode.DOWN) {
-                snek.move('D');
-            }
+            char move = switch (direction.current()) {
+                case LEFT -> 'L';
+                case RIGHT -> 'R';
+                case UP -> 'U';
+                case DOWN -> 'D';
+                default -> throw new IllegalStateException("No direction selected");
+            };
+            GameSession.MoveResult result = session.move(move);
 
-            if (!snek.getDead() && snek.ateCoin(coin)) {
+            if (result == GameSession.MoveResult.MOVED && snek.ateCoin(coin)) {
                 powerCoin();
-                game.incScore();
+                session.collectCoin();
                 if (game.gameWon()) {
                     gameView.drawGrid(coin, snek, obstacle, gameView.gc, false, 0);
+                    gameView.gameWon();
+                    gameView.updateScoreLabel();
+                    gameView.updateEffectLabel(session.effects());
+                    animation.stop();
                     return;
                 }
                 newCoin();
             }
+            animation.setRate((game.getSpeed() + rainbowBonus) * session.effects().speedMultiplier());
 
             direction.nextTick();
 
@@ -78,6 +85,7 @@ public class GameController {
             gameView.gameWon();
             gameView.gameOver(snek);
             gameView.updateScoreLabel();
+            gameView.updateEffectLabel(session.effects());
         }
     }
 
@@ -97,7 +105,7 @@ public class GameController {
 
         if (event.getCode().equals(KeyCode.TAB)) {
             reset();
-            gameView.scoreLabel.setText("Score: " + game.getScorePoints());
+            gameView.updateScoreLabel();
         }
 
         if (event.getCode().equals(KeyCode.PLUS)) {
@@ -127,12 +135,14 @@ public class GameController {
         gameView.resetTurns();
         session.reset();
 
+        rainbowBonus = 0;
         animation.setRate(game.getSpeed());
         direction.reset();
 
         gameView.gameWon();
         gameView.gameOver(session.snake());
         gameView.updateScoreLabel();
+        gameView.updateEffectLabel(session.effects());
 
         gameView.drawGrid(session.coin(), session.snake(), obstacle, gameView.gc, false, 0);
     }
@@ -140,19 +150,15 @@ public class GameController {
     private void powerCoin() {
         Snake snek = session.snake();
         Coin coin = session.coin();
-        animation.setRate(game.getSpeed());
-        snek.ignoreBorders(false);
+        rainbowBonus = 0;
         if (coin.getClass().equals(RainbowCoin.class)) {
             RainbowCoin tempCoin = (RainbowCoin) coin;
-            animation.setRate(game.getSpeed() + tempCoin.getSpeedBonus());
+            rainbowBonus = tempCoin.getSpeedBonus();
         } else if (coin.getClass().equals(SilverCoin.class)){
             Random rnd = new Random();
             obstacle.newObstacles(snek, coin, rnd.nextInt(game.getWidth() * game.getHeight()/ 20) +3);
             game.decMaxScore(obstacle.getObstacles().size());
-        } else if (coin.getClass().equals(BlueCoin.class)) {
-            snek.ignoreBorders(true);
         }
-        game.addPoints(coin.getPoints());
     }
     private void newCoin() {
         Snake snek = session.snake();
@@ -172,6 +178,10 @@ public class GameController {
                     session.replaceCoin(new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case SILVER ->
                     session.replaceCoin(new SilverCoin(game.getWidth(), game.getHeight(), snek, obstacle));
+            case SHIELD ->
+                    session.replaceCoin(new ShieldCoin(game.getWidth(), game.getHeight(), snek, obstacle));
+            case SLOW ->
+                    session.replaceCoin(new SlowCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case REGULAR ->
                     session.replaceCoin(new Coin(game.getWidth(), game.getHeight(), snek, obstacle));
         }
