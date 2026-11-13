@@ -1,4 +1,4 @@
-package com.comp2042;
+package com.comp2042.controller;
 
 import com.comp2042.model.BlueCoin;
 import com.comp2042.model.Coin;
@@ -9,6 +9,7 @@ import com.comp2042.model.Obstacle;
 import com.comp2042.model.RainbowCoin;
 import com.comp2042.model.SilverCoin;
 import com.comp2042.model.Snake;
+import com.comp2042.view.GameView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

@@ -1,5 +1,6 @@
-package com.comp2042;
+package com.comp2042.view;
 
+import com.comp2042.Main;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
