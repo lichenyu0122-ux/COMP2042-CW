@@ -53,4 +53,9 @@ public class ViewManager {
     public Stage getGameStage() {
         return gameStage;
     }
+
+    public void showMainMenu() {
+        primaryStage.show();
+        gameStage.close();
+    }
 }

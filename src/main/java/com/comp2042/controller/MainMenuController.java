@@ -47,7 +47,7 @@ public class MainMenuController {
         GameSession session = new GameSession(game);
 
         GameView gameView = new GameView(game);
-        GameController controller = new GameController(session, gameView, gameStage);
+        GameController controller = new GameController(session, gameView, viewManager);
 
         StackPane gamePane = new StackPane();
         gameScene = new Scene(gamePane, game.getWidth() * game.getMultiplier(), game.getHeight() * game.getMultiplier());

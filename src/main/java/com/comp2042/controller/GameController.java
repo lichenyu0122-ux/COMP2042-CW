@@ -11,12 +11,12 @@ import com.comp2042.model.RainbowCoin;
 import com.comp2042.model.SilverCoin;
 import com.comp2042.model.Snake;
 import com.comp2042.view.GameView;
+import com.comp2042.view.ViewManager;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.Random;
@@ -25,17 +25,17 @@ public class GameController {
     private final GameSession session;
     private final GameView gameView;
     private final Game game;
-    private final Stage stage;
+    private final ViewManager viewManager;
     private final Obstacle obstacle;
 
     private final DirectionInput direction = new DirectionInput();
     private final Timeline animation;
 
-    public GameController(GameSession session, GameView gameView, Stage stage) {
+    public GameController(GameSession session, GameView gameView, ViewManager viewManager) {
         this.session = session;
         this.gameView = gameView;
         this.game = session.game();
-        this.stage = stage;
+        this.viewManager = viewManager;
         this.obstacle = session.obstacle();
         animation = new Timeline(new KeyFrame(Duration.seconds(1), event -> tick()));
         animation.setCycleCount(Animation.INDEFINITE);
@@ -101,23 +101,21 @@ public class GameController {
         }
 
         if (event.getCode().equals(KeyCode.PLUS)) {
-            gameView.scaleToFullscreen(true, stage, obstacle, snek, coin);
+            gameView.scaleToFullscreen(true, viewManager.getGameStage(), obstacle, snek, coin);
             gameView.gameOverLabel.setStyle("-fx-font-size: 50;");
             gameView.gameWonLabel.setStyle("-fx-font-size: 50;");
             gameView.scoreLabel.setStyle("-fx-font-size: 35;");
         }
 
         if (event.getCode().equals(KeyCode.MINUS)) {
-            gameView.scaleToFullscreen(false, stage, obstacle, snek, coin);
+            gameView.scaleToFullscreen(false, viewManager.getGameStage(), obstacle, snek, coin);
             gameView.gameOverLabel.setStyle("-fx-font-size: 15;");
             gameView.gameWonLabel.setStyle("-fx-font-size: 15;");
             gameView.scoreLabel.setStyle("-fx-font-size: 15;");
         }
 
         if (event.getCode().equals(KeyCode.ESCAPE)) {
-            MainMenuController mainMenuController = new MainMenuController();
-            mainMenuController.getViewManager().getPrimaryStage().show();
-            mainMenuController.getViewManager().getGameStage().close();
+            viewManager.showMainMenu();
         }
     }
 
