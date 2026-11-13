@@ -28,8 +28,7 @@ public class GameController {
     private Stage stage;
     private Obstacle obstacle;
 
-    private KeyCode key = KeyCode.LEFT;
-    private boolean keyPressed = false;
+    private final DirectionInput direction = new DirectionInput();
 
     public GameController(Snake snek, Coin coin, Game game, GameView gameView, Obstacle obstacle, Stage stage) {
         this.snek = snek;
@@ -48,13 +47,13 @@ public class GameController {
             return;
         } else {
 
-            if (key.equals(KeyCode.LEFT)) {
+            if (direction.current() == KeyCode.LEFT) {
                 snek.move('L');
-            } else if (key.equals(KeyCode.RIGHT)) {
+            } else if (direction.current() == KeyCode.RIGHT) {
                 snek.move('R');
-            } else if (key.equals(KeyCode.UP)) {
+            } else if (direction.current() == KeyCode.UP) {
                 snek.move('U');
-            } else if (key.equals(KeyCode.DOWN)) {
+            } else if (direction.current() == KeyCode.DOWN) {
                 snek.move('D');
             }
 
@@ -68,7 +67,7 @@ public class GameController {
                 newCoin();
             }
 
-            keyPressed = false;
+            direction.nextTick();
 
             if (!snek.getDead() || snek.hitSelf()) {
                 gameView.drawGrid(coin, snek, obstacle, gameView.gc, false, 0);
@@ -83,11 +82,9 @@ public class GameController {
     public void handle(KeyEvent event) {
         if (event.getCode().isArrowKey()) animation.play();
 
-        if (isValidDirection(key, event.getCode()) && !keyPressed) {
-            KeyCode previousKey = key;
-            key = event.getCode();
-            keyPressed = true;
-            gameView.turnDir(snek, previousKey, key);
+        KeyCode previousKey = direction.current();
+        if (direction.tryTurn(event.getCode())) {
+            gameView.turnDir(snek, previousKey, direction.current());
         }
 
         if (event.getCode().equals(KeyCode.P)) {
@@ -120,19 +117,6 @@ public class GameController {
         }
     }
 
-    static boolean isValidDirection(KeyCode current, KeyCode next) {
-        if (next == null || !next.isArrowKey() || next == current) {
-            return false;
-        }
-        return switch (current) {
-            case LEFT -> next != KeyCode.RIGHT;
-            case RIGHT -> next != KeyCode.LEFT;
-            case UP -> next != KeyCode.DOWN;
-            case DOWN -> next != KeyCode.UP;
-            default -> false;
-        };
-    }
-
     private void reset() {
 
         animation.jumpTo(Duration.ZERO);
@@ -145,8 +129,7 @@ public class GameController {
         coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
 
         animation.setRate(game.getSpeed());
-        key = KeyCode.LEFT;
-        keyPressed = false;
+        direction.reset();
 
         gameView.gameWon();
         gameView.gameOver(snek);
