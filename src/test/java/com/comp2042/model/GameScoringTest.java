@@ -1,6 +1,5 @@
-package com.comp2042;
+package com.comp2042.model;
 
-import com.comp2042.model.Game;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

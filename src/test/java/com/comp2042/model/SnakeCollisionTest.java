@@ -1,7 +1,5 @@
-package com.comp2042;
+package com.comp2042.model;
 
-import com.comp2042.model.Obstacle;
-import com.comp2042.model.Snake;
 import org.junit.jupiter.api.Test;
 
 import java.awt.Point;
