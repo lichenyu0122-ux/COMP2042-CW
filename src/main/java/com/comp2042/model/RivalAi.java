@@ -15,6 +15,16 @@ public final class RivalAi {
         blocked.addAll(enemy.body());
         blocked.addAll(player.segments());
 
+        Point playerNext = player.preview();
+        Point trap = next(playerNext, player.heading(), player.canWrap());
+        if (player.score() > 0 && trap != null && !blocked.contains(trap)
+                && Math.abs(enemy.head().x - trap.x) + Math.abs(enemy.head().y - trap.y) <= 4) {
+            // Reach one cell beyond the player's next step, then move away and leave a body segment.
+            blocked.add(playerNext);
+        } else {
+            trap = null;
+        }
+
         Heading best = enemy.heading();
         int bestCost = Integer.MAX_VALUE;
         for (Heading candidate : Heading.values()) {
@@ -25,7 +35,7 @@ public final class RivalAi {
             if (next == null || blocked.contains(next)) {
                 continue;
             }
-            int cost = routeCost(next, blocked, match.foods(), enemy.canWrap());
+            int cost = routeCost(next, blocked, match.foods(), enemy.canWrap(), trap);
             if (cost < bestCost || (cost == bestCost && candidate == enemy.heading())) {
                 bestCost = cost;
                 best = candidate;
@@ -34,7 +44,8 @@ public final class RivalAi {
         return best;
     }
 
-    private int routeCost(Point start, Set<Point> blocked, List<RivalFood> foods, boolean wrap) {
+    private int routeCost(Point start, Set<Point> blocked, List<RivalFood> foods,
+                          boolean wrap, Point trap) {
         ArrayDeque<Point> queue = new ArrayDeque<>();
         Set<Point> visited = new HashSet<>(blocked);
         queue.add(start);
@@ -49,6 +60,9 @@ public final class RivalAi {
                     if (food.position().equals(current)) {
                         best = Math.min(best, distance * 5 - Math.min(food.points(), 15));
                     }
+                }
+                if (current.equals(trap)) {
+                    best = Math.min(best, distance * 5 - 15);
                 }
                 for (Heading direction : Heading.values()) {
                     Point next = next(current, direction, wrap);
