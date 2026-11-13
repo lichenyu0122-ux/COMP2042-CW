@@ -2,7 +2,7 @@ package com.comp2042.model;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Collections;
 
 public class Obstacle {
     private ArrayList<Point> obstacles = new ArrayList<>();
@@ -15,17 +15,29 @@ public class Obstacle {
     }
 
     public void newObstacles(Snake snek, Coin coin, int amount) {
-        if (obstacles.size() > 50) {
+        if (amount <= 0 || obstacles.size() >= 50) {
             return;
         }
-        Random rnd = new Random();
-        Point p;
-        for (int i=0; i<amount; i++) {
-            do {
-                p = new Point(rnd.nextInt(x) + 1, rnd.nextInt(y));
-            } while (coin.getPos().equals(p) || snek.getBody().contains(p) || snek.getHead().equals(p));
-            obstacles.add(p);
+
+        Point coinPosition = coin.getPos();
+        Point snakeHead = snek.getHead();
+        ArrayList<Point> snakeBody = snek.getBody();
+        ArrayList<Point> freeCells = new ArrayList<>();
+        for (int column = 0; column < x; column++) {
+            for (int row = 0; row < y; row++) {
+                Point candidate = new Point(column, row);
+                if (!candidate.equals(coinPosition)
+                        && !candidate.equals(snakeHead)
+                        && !snakeBody.contains(candidate)
+                        && !obstacles.contains(candidate)) {
+                    freeCells.add(candidate);
+                }
+            }
         }
+
+        Collections.shuffle(freeCells);
+        int count = Math.min(amount, Math.min(50 - obstacles.size(), freeCells.size()));
+        obstacles.addAll(freeCells.subList(0, count));
     }
 
     public ArrayList<Point> getObstacles() {
