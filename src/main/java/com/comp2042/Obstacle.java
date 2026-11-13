@@ -2,7 +2,7 @@ package com.comp2042;
 
 import javafx.scene.paint.Color;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 

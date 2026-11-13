@@ -25,7 +25,7 @@ class GameControllerDirectionTest {
     }
 
     @Test
-    void NonArrowKeysAreRejected() {
+    void nonArrowKeysAreRejected() {
         assertFalse(GameController.isValidDirection(KeyCode.UP, KeyCode.P));
         assertFalse(GameController.isValidDirection(KeyCode.UP, null));
     }
