@@ -4,6 +4,7 @@ import com.comp2042.model.BlueCoin;
 import com.comp2042.model.Coin;
 import com.comp2042.model.CoinSpawnPolicy;
 import com.comp2042.model.Game;
+import com.comp2042.model.GameSession;
 import com.comp2042.model.GoldCoin;
 import com.comp2042.model.Obstacle;
 import com.comp2042.model.RainbowCoin;
@@ -21,28 +22,29 @@ import javafx.util.Duration;
 import java.util.Random;
 
 public class GameController {
-    private Snake snek;
-    private Coin coin;
-    private GameView gameView;
-    private Game game;
-    private Stage stage;
-    private Obstacle obstacle;
+    private final GameSession session;
+    private final GameView gameView;
+    private final Game game;
+    private final Stage stage;
+    private final Obstacle obstacle;
 
     private final DirectionInput direction = new DirectionInput();
+    private final Timeline animation;
 
-    public GameController(Snake snek, Coin coin, Game game, GameView gameView, Obstacle obstacle, Stage stage) {
-        this.snek = snek;
-        this.coin = coin;
+    public GameController(GameSession session, GameView gameView, Stage stage) {
+        this.session = session;
         this.gameView = gameView;
-        this.game = game;
+        this.game = session.game();
         this.stage = stage;
-
-        this.obstacle = obstacle;
+        this.obstacle = session.obstacle();
+        animation = new Timeline(new KeyFrame(Duration.seconds(1), event -> tick()));
         animation.setCycleCount(Animation.INDEFINITE);
         animation.setRate(game.getSpeed());
     }
 
-    private final Timeline animation = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+    private void tick() {
+        Snake snek = session.snake();
+        Coin coin = session.coin();
         if (snek.getDead()) {
             return;
         } else {
@@ -70,16 +72,18 @@ public class GameController {
             direction.nextTick();
 
             if (!snek.getDead() || snek.hitSelf()) {
-                gameView.drawGrid(coin, snek, obstacle, gameView.gc, false, 0);
+                gameView.drawGrid(session.coin(), snek, obstacle, gameView.gc, false, 0);
             }
 
             gameView.gameWon();
             gameView.gameOver(snek);
             gameView.updateScoreLabel();
         }
-    }));
+    }
 
     public void handle(KeyEvent event) {
+        Snake snek = session.snake();
+        Coin coin = session.coin();
         if (event.getCode().isArrowKey()) animation.play();
 
         KeyCode previousKey = direction.current();
@@ -122,23 +126,22 @@ public class GameController {
         animation.jumpTo(Duration.ZERO);
         animation.stop();
 
-        game.resetScore();
-        obstacle.reset();
         gameView.resetTurns();
-        snek = new Snake(game.getWidth(), game.getHeight(), game.isNoBorder(), obstacle);
-        coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
+        session.reset();
 
         animation.setRate(game.getSpeed());
         direction.reset();
 
         gameView.gameWon();
-        gameView.gameOver(snek);
+        gameView.gameOver(session.snake());
         gameView.updateScoreLabel();
 
-        gameView.drawGrid(coin, snek, obstacle, gameView.gc, false, 0);
+        gameView.drawGrid(session.coin(), session.snake(), obstacle, gameView.gc, false, 0);
     }
 
     private void powerCoin() {
+        Snake snek = session.snake();
+        Coin coin = session.coin();
         animation.setRate(game.getSpeed());
         snek.ignoreBorders(false);
         if (coin.getClass().equals(RainbowCoin.class)) {
@@ -154,6 +157,7 @@ public class GameController {
         game.addPoints(coin.getPoints());
     }
     private void newCoin() {
+        Snake snek = session.snake();
         boolean powerUp = game.isPowerUp();
         int roll = powerUp ? new Random().nextInt(12) : -1;
         boolean hasObstacles = !obstacle.getObstacles().isEmpty();
@@ -163,15 +167,15 @@ public class GameController {
 
         switch (type) {
             case GOLD ->
-                    coin = new GoldCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+                    session.replaceCoin(new GoldCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case RAINBOW ->
-                    coin = new RainbowCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+                    session.replaceCoin(new RainbowCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case BLUE ->
-                    coin = new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+                    session.replaceCoin(new BlueCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case SILVER ->
-                    coin = new SilverCoin(game.getWidth(), game.getHeight(), snek, obstacle);
+                    session.replaceCoin(new SilverCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case REGULAR ->
-                    coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
+                    session.replaceCoin(new Coin(game.getWidth(), game.getHeight(), snek, obstacle));
         }
     }
 }
