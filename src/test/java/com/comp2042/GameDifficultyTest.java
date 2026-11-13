@@ -2,7 +2,10 @@ package com.comp2042;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameDifficultyTest {
 
@@ -36,5 +39,14 @@ class GameDifficultyTest {
                 IllegalArgumentException.class,
                 () -> new Game(20, 20, false, 'X')
         );
+    }
+
+    @Test
+    void menuDifficultySelectionMapsToGameSettings() {
+        assertEquals('E', MainMenuController.difficultyCode("Easy"));
+        assertEquals('N', MainMenuController.difficultyCode("Normal"));
+        assertEquals('H', MainMenuController.difficultyCode("Hard"));
+        assertThrows(IllegalArgumentException.class,
+                () -> MainMenuController.difficultyCode("Unknown"));
     }
 }

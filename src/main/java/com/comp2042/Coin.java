@@ -2,7 +2,7 @@ package com.comp2042;
 
 import javafx.scene.image.Image;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Random;
 
 public class Coin {

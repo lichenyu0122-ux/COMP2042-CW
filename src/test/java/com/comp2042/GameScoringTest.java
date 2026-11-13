@@ -3,6 +3,8 @@ package com.comp2042;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameScoringTest {
 
@@ -30,12 +32,12 @@ class GameScoringTest {
     void gameWonBecomesTrueAtMaximumScore() {
         Game game = new Game(2, 2, false, 'N');
 
-        assertEquals(false, game.gameWon());
+        assertFalse(game.gameWon());
 
         game.incScore();
-        assertEquals(false, game.gameWon());
+        assertFalse(game.gameWon());
 
         game.incScore();
-        assertEquals(true, game.gameWon());
+        assertTrue(game.gameWon());
     }
 }

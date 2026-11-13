@@ -2,7 +2,9 @@ package com.comp2042;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -11,11 +13,19 @@ public class MainMenuController {
     private static final int X_VALUE = 20;
     private static final int Y_VALUE = 20;
     private static final boolean POWER_UP = true;
-    private static final char DIFFICULTY = 'N';
+
+    @FXML
+    private ComboBox<String> difficultyBox;
 
     private Scene gameScene;
 
     private ViewManager viewManager = Main.getViewManager();
+
+    @FXML
+    private void initialize() {
+        difficultyBox.getItems().setAll("Easy", "Normal", "Hard");
+        difficultyBox.getSelectionModel().select("Normal");
+    }
 
     public void handleStart() {
         viewManager.initGameStage();
@@ -28,7 +38,7 @@ public class MainMenuController {
     }
 
     private void launchSnake(Stage gameStage) {
-        Game game = new Game(X_VALUE, Y_VALUE, POWER_UP, DIFFICULTY);
+        Game game = new Game(X_VALUE, Y_VALUE, POWER_UP, difficultyCode(difficultyBox.getValue()));
         Obstacle obstacle = new Obstacle(game.getWidth(), game.getHeight());
         Snake snek = new Snake(game.getWidth(), game.getHeight(), game.isNoBorder(), obstacle);
         Coin coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
@@ -51,6 +61,18 @@ public class MainMenuController {
 
     public ViewManager getViewManager() {
         return viewManager;
+    }
+
+    static char difficultyCode(String choice) {
+        if (choice == null) {
+            throw new IllegalArgumentException("Select a difficulty before starting");
+        }
+        return switch (choice) {
+            case "Easy" -> 'E';
+            case "Normal" -> 'N';
+            case "Hard" -> 'H';
+            default -> throw new IllegalArgumentException("Unsupported difficulty: " + choice);
+        };
     }
 
     public static int getxValue() {
