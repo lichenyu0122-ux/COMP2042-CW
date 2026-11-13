@@ -1,8 +1,8 @@
-package com.comp2042;
+package com.comp2042.model;
 
 public final class CoinSpawnPolicy {
 
-    enum CoinType {
+    public enum CoinType {
         REGULAR,
         GOLD,
         RAINBOW,
@@ -13,7 +13,7 @@ public final class CoinSpawnPolicy {
     private CoinSpawnPolicy() {
     }
 
-    static CoinType select(boolean powerUp, int roll, boolean hasObstacles) {
+    public static CoinType select(boolean powerUp, int roll, boolean hasObstacles) {
         if (!powerUp) {
             return CoinType.REGULAR;
         }

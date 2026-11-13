@@ -1,5 +1,9 @@
-package com.comp2042;
+package com.comp2042.view;
 
+import com.comp2042.model.Coin;
+import com.comp2042.model.Game;
+import com.comp2042.model.Obstacle;
+import com.comp2042.model.Snake;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -30,10 +34,11 @@ public class GameView {
     private double initY;
     private double fullScale = 1;
     private boolean fullsize = false;
-    private int[][] turnArray = new int[MainMenuController.getxValue()][MainMenuController.getyValue()];
+    private int[][] turnArray;
 
     public GameView(Game game) {
         this.game = game;
+        this.turnArray = new int[game.getWidth()][game.getHeight()];
     }
 
     public void makeScene(Scene scene, Snake snek, Coin coin) {

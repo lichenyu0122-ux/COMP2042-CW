@@ -1,4 +1,4 @@
-package com.comp2042;
+package com.comp2042.controller;
 
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.Test;
