@@ -3,6 +3,7 @@ package com.comp2042.model;
 import org.junit.jupiter.api.Test;
 import java.awt.Point;
 import java.util.Map;
+import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LevelParserTest {
@@ -29,6 +30,7 @@ class LevelParserTest {
     @Test void catalogLoadsThreePlayableLevels() {
         Map<String, Level> levels = LevelCatalog.load();
         assertEquals(3, levels.size());
+        assertEquals(Set.of("Grassland", "Maze", "Hourglass"), levels.keySet());
         for (Level level : levels.values()) {
             Game game = new Game(level.columns(), level.rows(), true, 'N', level.target(), level.speedMillis());
             GameSession session = new GameSession(game, level);

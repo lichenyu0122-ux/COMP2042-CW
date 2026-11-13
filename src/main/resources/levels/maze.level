@@ -1,4 +1,4 @@
-name: 迷宫
+name: Maze
 target: 15
 speed: 180
 cols: 20

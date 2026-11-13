@@ -4,13 +4,17 @@ GitHub repository: https://github.com/lichenyu0122-ux/COMP2042-CW
 
 ## Run
 
-Use JDK 25 and run `./mvnw javafx:run` from the repository root. Run `./mvnw clean verify` for the test suite.
+Use JDK 25. On Windows, run `.\mvnw.cmd javafx:run` from the repository root; on macOS or Linux, run `./mvnw javafx:run`. Replace `javafx:run` with `clean verify` to run the tests.
+
+In IntelliJ IDEA, open the Git checkout that contains this README and `pom.xml`, import it as a Maven project, select JDK 25, and run the Maven `javafx:run` goal. A downloaded `main` ZIP does not contain changes that are still on the `codex/document-expansion` branch.
 
 ## Play
 
 Choose a difficulty and a level in the main menu. Use the arrow keys to steer, `P` to pause, `Tab` to restart, `Esc` to return to the menu, and `+`/`-` to toggle full screen.
 
 The three levels are loaded from `src/main/resources/levels/`: Grassland has no fixed walls and a target of 10 food pickups; Maze has static passages and a target of 15; Hourglass has a narrow centre and a target of 20. Level files set the map, target and tick speed. To add a level, create a `.level` file and add its filename to `levels/index.txt`; the menu reads that index without a Java code change. `#` means wall and `.` means free space. `LevelParser` validates dimensions, characters, the start position and the target.
+
+All menus, level names, score labels and effect names displayed in the game are in English.
 
 ## Items and penalties
 
