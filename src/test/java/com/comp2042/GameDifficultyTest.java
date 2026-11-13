@@ -37,4 +37,13 @@ class GameDifficultyTest {
                 () -> new Game(20, 20, false, 'X')
         );
     }
+
+    @Test
+    void menuDifficultySelectionMapsToGameSettings() {
+        assertEquals('E', MainMenuController.difficultyCode("Easy"));
+        assertEquals('N', MainMenuController.difficultyCode("Normal"));
+        assertEquals('H', MainMenuController.difficultyCode("Hard"));
+        assertThrows(IllegalArgumentException.class,
+                () -> MainMenuController.difficultyCode("Unknown"));
+    }
 }
