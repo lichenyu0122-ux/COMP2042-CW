@@ -3,6 +3,8 @@ package com.comp2042.controller;
 import com.comp2042.Main;
 import com.comp2042.model.Game;
 import com.comp2042.model.GameSession;
+import com.comp2042.model.Level;
+import com.comp2042.model.LevelCatalog;
 import com.comp2042.view.GameView;
 import com.comp2042.view.ViewManager;
 import javafx.geometry.Insets;
@@ -12,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import java.util.Map;
 
 public class MainMenuController {
 
@@ -21,6 +24,9 @@ public class MainMenuController {
 
     @FXML
     private ComboBox<String> difficultyBox;
+    @FXML
+    private ComboBox<String> levelBox;
+    private Map<String, Level> levels;
 
     private Scene gameScene;
 
@@ -30,6 +36,9 @@ public class MainMenuController {
     private void initialize() {
         difficultyBox.getItems().setAll("Easy", "Normal", "Hard");
         difficultyBox.getSelectionModel().select("Normal");
+        levels = LevelCatalog.load();
+        levelBox.getItems().setAll(levels.keySet());
+        levelBox.getSelectionModel().selectFirst();
     }
 
     public void handleStart() {
@@ -43,10 +52,13 @@ public class MainMenuController {
     }
 
     private void launchSnake(Stage gameStage) {
-        Game game = new Game(X_VALUE, Y_VALUE, POWER_UP, difficultyCode(difficultyBox.getValue()));
-        GameSession session = new GameSession(game);
+        Level level = levels.get(levelBox.getValue());
+        if (level == null) throw new IllegalStateException("Select a level before starting");
+        Game game = new Game(level.columns(), level.rows(), POWER_UP,
+                difficultyCode(difficultyBox.getValue()), level.target(), level.speedMillis());
+        GameSession session = new GameSession(game, level);
 
-        GameView gameView = new GameView(game);
+        GameView gameView = new GameView(game, level);
         GameController controller = new GameController(session, gameView, viewManager);
 
         StackPane gamePane = new StackPane();
@@ -54,7 +66,7 @@ public class MainMenuController {
 
         gameScene.setOnKeyPressed(controller::handle);
 
-        gameView.makeScene(gameScene, session.snake(), session.coin());
+        gameView.makeScene(gameScene, session.snake(), session.coin(), session.obstacle());
         gamePane.getChildren().addAll(gameView.gridCanvas, gameView.gameOverLabel, gameView.gameWonLabel, gameView.scoreLabel);
         gamePane.setPadding(new Insets(20));
         gamePane.setAlignment(gameView.gameOverLabel, Pos.TOP_CENTER);

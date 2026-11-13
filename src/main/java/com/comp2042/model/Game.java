@@ -5,6 +5,8 @@ public class Game {
     private int height;
     private int score;
     private int maxScore;
+    private final int initialMaxScore;
+    private final boolean fixedTarget;
     private double multiplier;
     private int scorePoints;
     private double speed;
@@ -12,6 +14,10 @@ public class Game {
     private boolean noBorder;
 
     public Game(int x, int y, boolean powerUp, char difficulty) {
+        this(x, y, powerUp, difficulty, 0, 0);
+    }
+
+    public Game(int x, int y, boolean powerUp, char difficulty, int targetScore, int speedMillis) {
         switch (difficulty) {
             case 'E' -> {
                 speed = 8.5;
@@ -34,6 +40,10 @@ public class Game {
         width = x;
         height = y;
         maxScore = x * y - 2;
+        fixedTarget = targetScore > 0;
+        if (fixedTarget) maxScore = targetScore;
+        initialMaxScore = maxScore;
+        if (speedMillis > 0) speed = 1000.0 / speedMillis;
 
         if (height > 50) {
             multiplier = 10;
@@ -43,7 +53,7 @@ public class Game {
     }
 
     public boolean gameWon() {
-        return score == maxScore;
+        return score >= maxScore;
     }
 
     public void incScore() {
@@ -51,7 +61,7 @@ public class Game {
     }
 
     public void decMaxScore(int num) {
-        this.maxScore -= (num - 1);
+        if (!fixedTarget) this.maxScore -= (num - 1);
     }
 
     public int getWidth() {
@@ -65,7 +75,7 @@ public class Game {
     public void resetScore() {
         score = 0;
         scorePoints = 0;
-        maxScore = width * height - 2;
+        maxScore = initialMaxScore;
     }
 
     public double getMultiplier() {
@@ -79,6 +89,9 @@ public class Game {
     public int getScorePoints() {
         return scorePoints;
     }
+
+    public int getTargetScore() { return maxScore; }
+    public int getScore() { return score; }
 
     public boolean isPowerUp() {
         return powerUp;

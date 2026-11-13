@@ -47,4 +47,9 @@ public class Obstacle {
     public void reset() {
         obstacles.clear();
     }
+
+    public void load(Level level) {
+        reset();
+        level.walls().forEach(point -> obstacles.add(new Point(point)));
+    }
 }

@@ -3,6 +3,7 @@ package com.comp2042.view;
 import com.comp2042.model.Coin;
 import com.comp2042.model.BlueCoin;
 import com.comp2042.model.Game;
+import com.comp2042.model.Level;
 import com.comp2042.model.GoldCoin;
 import com.comp2042.model.Obstacle;
 import com.comp2042.model.RainbowCoin;
@@ -45,6 +46,7 @@ public class GameView {
     private boolean gameWonVis = false;
 
     private Game game;
+    private final Level level;
     private double initX;
     private double initY;
     private double fullScale = 1;
@@ -52,17 +54,22 @@ public class GameView {
     private int[][] turnArray;
 
     public GameView(Game game) {
+        this(game, null);
+    }
+
+    public GameView(Game game, Level level) {
         this.game = game;
+        this.level = level;
         this.turnArray = new int[game.getWidth()][game.getHeight()];
     }
 
-    public void makeScene(Scene scene, Snake snek, Coin coin) {
+    public void makeScene(Scene scene, Snake snek, Coin coin, Obstacle obstacle) {
         Scene gameScene = scene;
         gridCanvas = new Canvas(gameScene.getWidth(), gameScene.getHeight());
         initX = scene.getWidth();
         initY = scene.getHeight();
         gc = gridCanvas.getGraphicsContext2D();
-        drawGrid(coin, snek, gc);
+        drawGrid(coin, snek, obstacle, gc, false, 0);
 
         gameOverLabel = new Label("GAME OVER");
         gameOverLabel.setId("gameOverLabel");
@@ -75,7 +82,7 @@ public class GameView {
         gameWonLabel.getStylesheets().add(css);
         gameWonLabel.setVisible(false);
 
-        scoreLabel = new Label("Score: " + game.getScorePoints());
+        scoreLabel = new Label(scoreText());
         scoreLabel.setId("scoreLabel");
         scoreLabel.getStylesheets().add(css);
         scoreLabel.setFont(new Font("Arial", 20));
@@ -246,7 +253,13 @@ public class GameView {
     }
 
     public void updateScoreLabel() {
-        scoreLabel.setText("Score: " + game.getScorePoints());
+        scoreLabel.setText(scoreText());
+    }
+
+    private String scoreText() {
+        return (level == null ? "" : level.name() + "  ")
+                + "Score: " + game.getScorePoints()
+                + (level == null ? "" : "  Coins: " + game.getScore() + "/" + game.getTargetScore());
     }
 
 }
