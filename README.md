@@ -20,7 +20,7 @@ On macOS or Linux, use `./mvnw` in place of `.\mvnw.cmd`. The package command cr
 
 The menu offers **Classic**, **Rival 1: Meadow**, and **Rival 2: Crossroads**. Classic retains the Easy, Normal, and Hard difficulty choices. The two rival stages share the same 20 by 20 board but have different obstacle layouts. Rival 1 starts with four obstacles at 4.5 moves per second; Rival 2 starts with eight obstacles at 5.5 moves per second. Both are slower than the original Normal difficulty (8.5 moves per second).
 
-In Rival mode, the green player snake and purple computer snake compete for the same beans. The score display shows both totals. The first snake to reach **100 points** wins. A normal bean is worth 5 points and a gold bean is worth 15. The computer searches for reachable beans while avoiding walls, obstacles, and snake bodies. Its moving body can block and kill the player.
+In Rival mode, the green player snake and purple computer snake compete for the same beans. The score display shows both totals. The first snake to reach **100 points** wins. A normal bean is worth 5 points and a gold bean is worth 15. The computer searches for reachable beans while avoiding walls, obstacles, and snake bodies. When the player has points and the snakes are close, it may intercept the player's predicted route and leave its body in the way; a successful collision drops the player's score as beans.
 
 If a snake hits the other snake's body, a wall, an obstacle, or itself, it loses its score and respawns. A head-to-head collision kills both snakes. Each dead snake leaves nearby beans whose total value equals its score immediately before death. Dropped beans are worth up to 5 points each, with a smaller final bean when needed. Both snakes may collect them.
 
@@ -45,7 +45,7 @@ The original power-up types also appear in Rival mode and affect whichever snake
 
 ## Tests and current status
 
-JUnit tests cover the original scoring and difficulty rules, coin selection, direction input, Classic snake collisions, obstacle generation, round reset, Rival collisions in both directions, exact dropped-score totals, 100-point victory, powers, AI safety, and long matches in both stages. Run them with `.\mvnw.cmd clean test`. The current suite has **40 passing tests**. The JavaFX menu and Rival 1 gameplay have also been opened for a visual check.
+JUnit tests cover the original scoring and difficulty rules, coin selection, direction input, Classic snake collisions, obstacle generation, round reset, Rival collisions in both directions, exact dropped-score totals, 100-point victory, powers, AI safety and interception, and long matches in both stages. Run them with `.\mvnw.cmd clean test`. The current suite has **41 passing tests**. The JavaFX menu and Rival 1 gameplay have also been opened for a visual check.
 
 No known failing feature is being claimed as complete. Automated end-to-end keyboard and rendering tests are not included; the JavaFX interaction check is manual. The final coursework `Design.pdf`, generated Javadoc, and demonstration video have not yet been prepared. The final project should also be tested on another computer before submission.
 
