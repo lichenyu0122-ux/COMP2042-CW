@@ -12,8 +12,10 @@
     </stylesheets>
     <children>
         <Label id="title" alignment="CENTER" contentDisplay="CENTER" layoutY="110.0" prefHeight="35.0" prefWidth="550.0" text="Snake Game" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-        <Label layoutX="170.0" layoutY="168.0" style="-fx-font-size: 16px;" text="Difficulty" textFill="BLACK" />
-        <ComboBox fx:id="difficultyBox" layoutX="260.0" layoutY="162.0" prefWidth="115.0" />
-        <Button fx:id="btn_start" layoutY="220.0" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" onAction="#handleStart" prefHeight="40.0" prefWidth="115.0" styleClass="startAndQuitBtn" text="Start" textFill="WHITE" AnchorPane.leftAnchor="217.5" />
+        <Label layoutX="190.0" layoutY="164.0" style="-fx-font-size: 16px;" text="Level" textFill="BLACK" />
+        <ComboBox fx:id="levelBox" layoutX="260.0" layoutY="158.0" prefWidth="125.0" />
+        <Label layoutX="170.0" layoutY="209.0" style="-fx-font-size: 16px;" text="Difficulty" textFill="BLACK" />
+        <ComboBox fx:id="difficultyBox" layoutX="260.0" layoutY="203.0" prefWidth="125.0" />
+        <Button fx:id="btn_start" layoutY="270.0" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" onAction="#handleStart" prefHeight="40.0" prefWidth="115.0" styleClass="startAndQuitBtn" text="Start" textFill="WHITE" AnchorPane.leftAnchor="217.5" />
     </children>
 </AnchorPane>

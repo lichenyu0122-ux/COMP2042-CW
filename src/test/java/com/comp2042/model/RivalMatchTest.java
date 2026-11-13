@@ -56,6 +56,23 @@ class RivalMatchTest {
     }
 
     @Test
+    void playerAlsoDiesWhenHittingEnemyBody() {
+        RivalMatch match = matchWithFoodAtCorner();
+        match.snake(RivalMatch.Side.PLAYER).addScore(17);
+        RivalSnake oldPlayer = match.snake(RivalMatch.Side.PLAYER);
+        match.move(RivalMatch.Side.ENEMY, Heading.UP);
+
+        for (int step = 0; step < 11; step++) {
+            match.move(RivalMatch.Side.PLAYER, Heading.RIGHT);
+        }
+
+        assertNotSame(oldPlayer, match.snake(RivalMatch.Side.PLAYER));
+        assertEquals(0, match.snake(RivalMatch.Side.PLAYER).score());
+        assertEquals(17, match.foods().stream().filter(RivalFood::dropped)
+                .mapToInt(RivalFood::points).sum());
+    }
+
+    @Test
     void headCollisionRespawnsBothAndPreservesBothScoresAsDrops() {
         RivalMatch match = matchWithFoodAtCorner();
         match.snake(RivalMatch.Side.PLAYER).addScore(9);
@@ -88,6 +105,16 @@ class RivalMatchTest {
         silver.move(RivalMatch.Side.PLAYER, Heading.RIGHT);
         assertEquals(before + RivalLevel.MEADOW.silverObstacles(), silver.obstacles().size());
         assertFalse(silver.snake(RivalMatch.Side.ENEMY).speedBoosted());
+
+        RivalMatch enemyRainbow = new RivalMatch(RivalLevel.MEADOW, new Random(4),
+                new RivalFood(new Point(14, 10), CoinSpawnPolicy.CoinType.RAINBOW, 5, false));
+        enemyRainbow.move(RivalMatch.Side.ENEMY, Heading.LEFT);
+        assertTrue(enemyRainbow.snake(RivalMatch.Side.ENEMY).speedBoosted());
+
+        RivalMatch enemyBlue = new RivalMatch(RivalLevel.MEADOW, new Random(4),
+                new RivalFood(new Point(14, 10), CoinSpawnPolicy.CoinType.BLUE, 5, false));
+        enemyBlue.move(RivalMatch.Side.ENEMY, Heading.LEFT);
+        assertTrue(enemyBlue.snake(RivalMatch.Side.ENEMY).canWrap());
     }
 
     private static RivalMatch matchWithFood(CoinSpawnPolicy.CoinType type, int points) {
