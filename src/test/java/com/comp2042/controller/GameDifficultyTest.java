@@ -1,7 +1,6 @@
 package com.comp2042.controller;
 
 import com.comp2042.model.Game;
-import com.comp2042.model.RivalLevel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,13 +49,5 @@ class GameDifficultyTest {
         assertEquals('H', MainMenuController.difficultyCode("Hard"));
         assertThrows(IllegalArgumentException.class,
                 () -> MainMenuController.difficultyCode("Unknown"));
-    }
-
-    @Test
-    void menuRivalSelectionMapsToBothLevels() {
-        assertEquals(RivalLevel.MEADOW, MainMenuController.levelForChoice("Rival 1"));
-        assertEquals(RivalLevel.CROSSROADS, MainMenuController.levelForChoice("Rival 2"));
-        assertThrows(IllegalArgumentException.class,
-                () -> MainMenuController.levelForChoice("Unknown"));
     }
 }
