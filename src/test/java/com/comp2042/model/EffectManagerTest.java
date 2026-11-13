@@ -46,6 +46,12 @@ class EffectManagerTest {
         assertEquals(GameSession.MoveResult.MOVED, wrap.move('U'));
         assertEquals(new Point(2, 3), wrap.snake().getHead());
 
+        GameSession blockedExit = new GameSession(new Game(4, 4, true, 'N'));
+        blockedExit.obstacle().getObstacles().add(new Point(2, 3));
+        blockedExit.effects().activate(new GhostEffect());
+        blockedExit.move('U'); blockedExit.move('U');
+        assertEquals(GameSession.MoveResult.DEAD, blockedExit.move('U'));
+
         GameSession body = new GameSession(new Game(12, 12, true, 'N'));
         body.effects().activate(new GhostEffect());
         body.move('U'); body.move('L'); body.move('D');
@@ -57,5 +63,21 @@ class EffectManagerTest {
         session.effects().activate(new ShieldEffect());
         session.reset();
         assertEquals(0, session.effects().remaining(EffectType.SHIELD));
+    }
+
+    @Test void pickupsActivateEffectsThroughSession() {
+        GameSession session = new GameSession(new Game(8, 8, true, 'N'));
+        Snake snake = session.snake();
+        Obstacle obstacle = session.obstacle();
+        session.replaceCoin(new ShieldCoin(8, 8, snake, obstacle));
+        session.collectCoin();
+        session.replaceCoin(new SlowCoin(8, 8, snake, obstacle));
+        session.collectCoin();
+        session.replaceCoin(new BlueCoin(8, 8, snake, obstacle));
+        session.collectCoin();
+        assertEquals(20, session.effects().remaining(EffectType.SHIELD));
+        assertEquals(8, session.effects().remaining(EffectType.SLOW));
+        assertEquals(6, session.effects().remaining(EffectType.GHOST));
+        assertEquals(3, session.game().getScore());
     }
 }

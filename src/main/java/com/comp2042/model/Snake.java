@@ -15,6 +15,7 @@ public class Snake {
     private int snakeDir = 270;
     private Point previousHead;
     private ArrayList<Point> previousBody;
+    private int previousDirection;
 
     public Snake(int x, int y, boolean noBorder, Obstacle obstacle) {
         this.obstacle = obstacle;
@@ -27,6 +28,7 @@ public class Snake {
 
     public void move(char dir) {
         previousHead = new Point(head);
+        previousDirection = snakeDir;
         previousBody = new ArrayList<>();
         body.forEach(point -> previousBody.add(new Point(point)));
         body.add(new Point(head));
@@ -76,7 +78,10 @@ public class Snake {
                 break;
         }
 
-        if (body.size() > 4 && hitSelf() && !body.get(0).equals(head)) {
+        if (obstacle.getObstacles().contains(head)) {
+            dead = true;
+        }
+        if (hitSelf() && !body.get(0).equals(head)) {
             dead = true;
         }
     }
@@ -124,6 +129,7 @@ public class Snake {
         head.setLocation(previousHead);
         body.clear();
         previousBody.forEach(point -> body.add(new Point(point)));
+        snakeDir = previousDirection;
         dead = false;
     }
 

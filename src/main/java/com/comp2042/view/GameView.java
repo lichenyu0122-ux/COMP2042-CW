@@ -145,21 +145,6 @@ public class GameView {
         }
     }
 
-    private void drawGrid(Coin coin, Snake snek, GraphicsContext gc) {
-        gc.setFill(GRID_COLOR);
-        gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
-
-        drawCoin(coin);
-
-        int bodyIndex = 0;
-        for (Point point : snek.getBody()) {
-            drawBody(snek, point, bodyIndex);
-            bodyIndex++;
-        }
-
-        drawHead(snek);
-    }
-
     private void drawCoin(Coin coin) {
         double x = coin.getPos().x * game.getMultiplier() * fullScale;
         double y = coin.getPos().y * game.getMultiplier() * fullScale;

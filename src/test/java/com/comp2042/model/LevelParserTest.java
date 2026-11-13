@@ -18,7 +18,9 @@ class LevelParserTest {
 
     @Test void rejectsInvalidMaps() {
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("rows: 3", "rows: 4")));
-        assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("....\n#...", "..?\n#...")));
+        IllegalArgumentException unknown = assertThrows(IllegalArgumentException.class,
+                () -> parser.parse(VALID.replace("....\n#...", "..?.\n#...")));
+        assertTrue(unknown.getMessage().contains("line 8"));
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("....\n#...", "..#.\n#...")));
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("target: 2", "target: 11")));
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("speed: 180", "speed: -1")));
