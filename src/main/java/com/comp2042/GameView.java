@@ -1,5 +1,9 @@
 package com.comp2042;
 
+import com.comp2042.model.Coin;
+import com.comp2042.model.Game;
+import com.comp2042.model.Obstacle;
+import com.comp2042.model.Snake;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;

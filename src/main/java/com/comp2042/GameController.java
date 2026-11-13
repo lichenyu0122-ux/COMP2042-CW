@@ -1,5 +1,14 @@
 package com.comp2042;
 
+import com.comp2042.model.BlueCoin;
+import com.comp2042.model.Coin;
+import com.comp2042.model.CoinSpawnPolicy;
+import com.comp2042.model.Game;
+import com.comp2042.model.GoldCoin;
+import com.comp2042.model.Obstacle;
+import com.comp2042.model.RainbowCoin;
+import com.comp2042.model.SilverCoin;
+import com.comp2042.model.Snake;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

@@ -1,5 +1,9 @@
 package com.comp2042;
 
+import com.comp2042.model.Coin;
+import com.comp2042.model.Game;
+import com.comp2042.model.Obstacle;
+import com.comp2042.model.Snake;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.fxml.FXML;
