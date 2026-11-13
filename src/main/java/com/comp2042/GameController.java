@@ -18,8 +18,7 @@ public class GameController {
     private Stage stage;
     private Obstacle obstacle;
 
-    public static KeyCode key = KeyCode.LEFT;
-    public static KeyCode lastKey = KeyCode.LEFT;
+    private KeyCode key = KeyCode.LEFT;
     private boolean keyPressed = false;
 
     public GameController(Snake snek, Coin coin, Game game, GameView gameView, Obstacle obstacle, Stage stage) {
@@ -75,10 +74,10 @@ public class GameController {
         if (event.getCode().isArrowKey()) animation.play();
 
         if (isValidDirection(key, event.getCode()) && !keyPressed) {
-            lastKey = key;
+            KeyCode previousKey = key;
             key = event.getCode();
             keyPressed = true;
-            gameView.turnDir(snek);
+            gameView.turnDir(snek, previousKey, key);
         }
 
         if (event.getCode().equals(KeyCode.P)) {
