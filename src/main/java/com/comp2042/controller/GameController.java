@@ -138,14 +138,15 @@ public class GameController {
         animation.jumpTo(Duration.ZERO);
         animation.stop();
 
+        game.resetScore();
+        obstacle.reset();
+        gameView.resetTurns();
         snek = new Snake(game.getWidth(), game.getHeight(), game.isNoBorder(), obstacle);
         coin = new Coin(game.getWidth(), game.getHeight(), snek, obstacle);
 
         animation.setRate(game.getSpeed());
         key = KeyCode.LEFT;
         keyPressed = false;
-        game.resetScore();
-        obstacle.reset();
 
         gameView.gameWon();
         gameView.gameOver(snek);

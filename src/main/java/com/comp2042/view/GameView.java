@@ -221,6 +221,10 @@ public class GameView {
         } else turnArray[(int) snek.getHead().getX()][(int) snek.getHead().getY()] = 0;
     }
 
+    public void resetTurns() {
+        turnArray = new int[game.getWidth()][game.getHeight()];
+    }
+
     public void gameOver(Snake snek) {
         if (snek.getDead() && !gameOverVis) {
             gameOverVis = true;
