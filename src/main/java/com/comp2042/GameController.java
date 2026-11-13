@@ -85,7 +85,7 @@ public class GameController {
     public void handle(KeyEvent event) {
         if (event.getCode().isArrowKey()) animation.play();
 
-        if (valKey(event.getCode()) && !keyPressed) {
+        if (isValidDirection(key, event.getCode()) && !keyPressed) {
             lastKey = key;
             key = event.getCode();
             keyPressed = true;
@@ -122,15 +122,17 @@ public class GameController {
         }
     }
 
-    private boolean valKey(KeyCode key) {
-        if (!key.isArrowKey()) return false;
-        else {
-            if (key.equals(KeyCode.LEFT)) if (!this.key.equals(KeyCode.RIGHT)) return true;
-            if (key.equals(KeyCode.RIGHT)) if (!this.key.equals(KeyCode.LEFT)) return true;
-            if (key.equals(KeyCode.DOWN)) if (!this.key.equals(KeyCode.DOWN)) return true;
-            if (key.equals(KeyCode.UP)) return !this.key.equals(KeyCode.DOWN);
+    static boolean isValidDirection(KeyCode current, KeyCode next) {
+        if (next == null || !next.isArrowKey() || next == current) {
             return false;
         }
+        return switch (current) {
+            case LEFT -> next != KeyCode.RIGHT;
+            case RIGHT -> next != KeyCode.LEFT;
+            case UP -> next != KeyCode.DOWN;
+            case DOWN -> next != KeyCode.UP;
+            default -> false;
+        };
     }
 
     private void reset() {
