@@ -5,9 +5,10 @@ import java.awt.Point;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PoisonCoinTest {
-    @Test void pickupShortensByTwoWithoutAddingScore() {
+    @Test void pickupShortensByTwoAndDeductsTenPoints() {
         Game game = new Game(12, 12, true, 'N');
         GameSession session = new GameSession(game);
+        game.addPoints(25);
         Snake snake = session.snake();
         snake.move('U');
         snake.move('U');
@@ -20,7 +21,7 @@ class PoisonCoinTest {
         assertEquals(GameSession.Pickup.POISON, session.finishMove());
         assertEquals(before - 2, snake.getBody().size());
         assertEquals(0, game.getScore());
-        assertEquals(0, game.getScorePoints());
+        assertEquals(15, game.getScorePoints());
         assertNotNull(session.coin());
         assertNull(session.poisonCoin());
     }
@@ -38,6 +39,7 @@ class PoisonCoinTest {
         assertEquals(next, snake.getHead());
         assertFalse(snake.getDead());
         assertTrue(snake.getBody().isEmpty());
+        assertEquals(0, session.game().getScorePoints());
         assertThrows(IllegalArgumentException.class, () -> snake.shrink(-1));
     }
 

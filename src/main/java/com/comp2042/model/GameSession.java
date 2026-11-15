@@ -5,6 +5,7 @@ import java.util.Objects;
 
 /** Holds the mutable state for one game and starts a fresh round. */
 public final class GameSession {
+    private static final int POISON_POINT_PENALTY = 10;
     private final Game game;
     private final Obstacle obstacle;
     private final Level level;
@@ -62,6 +63,7 @@ public final class GameSession {
         if (!snake.ateCoin(touched)) return Pickup.NONE;
         if (touched == poisonCoin) {
             snake.shrink(2);
+            game.deductPoints(POISON_POINT_PENALTY);
             poisonCoin = null;
             return Pickup.POISON;
         }

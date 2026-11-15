@@ -29,6 +29,14 @@ class GameScoringTest {
     }
 
     @Test
+    void poisonPenaltyCannotMakePointsNegative() {
+        Game game = new Game(20, 20, false, 'N');
+        game.addPoints(5);
+        game.deductPoints(10);
+        assertEquals(0, game.getScorePoints());
+    }
+
+    @Test
     void resetRestoresOriginalWinThreshold() {
         Game game = new Game(2, 2, false, 'N');
         game.decMaxScore(2);

@@ -98,6 +98,11 @@ public class Game {
         scorePoints += n;
     }
 
+    public void deductPoints(int amount) {
+        if (amount < 0) throw new IllegalArgumentException("Penalty must be non-negative");
+        scorePoints = Math.max(0, scorePoints - amount);
+    }
+
     public int getScorePoints() {
         return scorePoints;
     }
