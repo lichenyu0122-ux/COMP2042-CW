@@ -17,7 +17,7 @@
         <Label layoutX="170.0" layoutY="203.0" style="-fx-font-size: 16px;" text="Level" textFill="BLACK" />
         <ComboBox fx:id="levelBox" layoutX="260.0" layoutY="197.0" prefWidth="115.0" />
         <Button fx:id="btn_start" layoutY="255.0" minHeight="40.0" minWidth="115.0" mnemonicParsing="false" onAction="#handleStart" prefHeight="40.0" prefWidth="115.0" styleClass="startAndQuitBtn" text="Start" textFill="WHITE" AnchorPane.leftAnchor="217.5" />
-        <Label alignment="CENTER" layoutY="315.0" prefWidth="550.0" style="-fx-font-size: 12px;" text="Arrow keys: move | P: pause | Tab: restart | Esc: menu" textFill="BLACK" />
+        <Label alignment="CENTER" layoutY="315.0" prefWidth="550.0" style="-fx-font-size: 12px;" text="Arrow keys: move | P: pause/resume | Tab: restart | Esc: menu" textFill="BLACK" />
         <Label alignment="CENTER" layoutY="339.0" prefWidth="550.0" style="-fx-font-size: 12px;" text="Blue: Ghost | Cyan: Shield | Orange: Slow | Purple: Poison" textFill="BLACK" />
     </children>
 </AnchorPane>

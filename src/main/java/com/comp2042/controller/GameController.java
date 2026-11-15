@@ -93,7 +93,11 @@ public class GameController {
     public void handle(KeyEvent event) {
         Snake snek = session.snake();
         Coin coin = session.coin();
-        if (event.getCode().isArrowKey()) animation.play();
+        if (event.getCode().isArrowKey()
+                && animation.getStatus() == Animation.Status.STOPPED
+                && !snek.getDead() && !game.gameWon()) {
+            animation.play();
+        }
 
         KeyCode previousKey = direction.current();
         if (direction.tryTurn(event.getCode())) {
@@ -101,7 +105,12 @@ public class GameController {
         }
 
         if (event.getCode().equals(KeyCode.P)) {
-            animation.stop();
+            if (animation.getStatus() == Animation.Status.RUNNING) {
+                animation.pause();
+            } else if (animation.getStatus() == Animation.Status.PAUSED
+                    && !snek.getDead() && !game.gameWon()) {
+                animation.play();
+            }
         }
 
         if (event.getCode().equals(KeyCode.TAB)) {
@@ -126,6 +135,7 @@ public class GameController {
         }
 
         if (event.getCode().equals(KeyCode.ESCAPE)) {
+            animation.stop();
             viewManager.showMainMenu();
         }
     }
