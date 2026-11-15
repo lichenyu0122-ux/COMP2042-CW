@@ -58,6 +58,19 @@ class EffectManagerTest {
         assertEquals(GameSession.MoveResult.DEAD, body.move('R'));
     }
 
+    @Test void ghostStopsWrappingAfterSixMoves() {
+        GameSession session = new GameSession(new Game(4, 4, true, 'N'));
+        session.replaceCoin(new Coin(new Point(0, 0)));
+        session.effects().activate(new GhostEffect());
+        for (int i = 0; i < 6; i++) {
+            assertEquals(GameSession.MoveResult.MOVED, session.move('U'));
+            session.finishMove();
+        }
+        assertEquals(0, session.effects().remaining(EffectType.GHOST));
+        assertEquals(new Point(2, 0), session.snake().getHead());
+        assertEquals(GameSession.MoveResult.DEAD, session.move('U'));
+    }
+
     @Test void resetRemovesEffects() {
         GameSession session = new GameSession(new Game(8, 8, true, 'N'));
         session.effects().activate(new ShieldEffect());

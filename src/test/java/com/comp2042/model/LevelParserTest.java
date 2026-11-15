@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import java.awt.Point;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayDeque;
+import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LevelParserTest {
@@ -41,6 +43,26 @@ class LevelParserTest {
             session.reset();
             assertEquals(level.target(), game.getTargetScore());
             assertFalse(game.gameWon());
+            assertEveryFreeCellReachable(level);
         }
+    }
+
+    private static void assertEveryFreeCellReachable(Level level) {
+        Set<Point> walls = level.walls();
+        Set<Point> reached = new HashSet<>();
+        ArrayDeque<Point> queue = new ArrayDeque<>();
+        Point start = new Point(level.columns() / 2, level.rows() / 2);
+        reached.add(start);
+        queue.add(start);
+        while (!queue.isEmpty()) {
+            Point point = queue.remove();
+            for (int[] step : new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
+                Point next = new Point(point.x + step[0], point.y + step[1]);
+                if (next.x >= 0 && next.x < level.columns()
+                        && next.y >= 0 && next.y < level.rows()
+                        && !walls.contains(next) && reached.add(next)) queue.add(next);
+            }
+        }
+        assertEquals(level.columns() * level.rows() - walls.size(), reached.size(), level.name());
     }
 }

@@ -50,4 +50,17 @@ class GameDifficultyTest {
         assertThrows(IllegalArgumentException.class,
                 () -> MainMenuController.difficultyCode("Unknown"));
     }
+
+    @Test
+    void levelSpeedRespondsToDifficultyAndGhostOwnsBorderWrapping() {
+        Game easy = new Game(20, 20, true, 'E', 10, 150);
+        Game normal = new Game(20, 20, true, 'N', 10, 150);
+        Game hard = new Game(20, 20, true, 'H', 10, 150);
+        assertEquals(1000.0 / 150 * 0.8, easy.getSpeed());
+        assertEquals(1000.0 / 150, normal.getSpeed());
+        assertEquals(1000.0 / 150 * 1.25, hard.getSpeed());
+        assertFalse(easy.isNoBorder());
+        assertFalse(normal.isNoBorder());
+        assertFalse(hard.isNoBorder());
+    }
 }

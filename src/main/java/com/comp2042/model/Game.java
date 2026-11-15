@@ -18,6 +18,9 @@ public class Game {
     }
 
     public Game(int x, int y, boolean powerUp, char difficulty, int targetScore, int speedMillis) {
+        if (targetScore < 0 || speedMillis < 0 || (targetScore == 0) != (speedMillis == 0)) {
+            throw new IllegalArgumentException("Level target and speed must both be positive");
+        }
         switch (difficulty) {
             case 'E' -> {
                 speed = 8.5;
@@ -43,7 +46,16 @@ public class Game {
         fixedTarget = targetScore > 0;
         if (fixedTarget) maxScore = targetScore;
         initialMaxScore = maxScore;
-        if (speedMillis > 0) speed = 1000.0 / speedMillis;
+        if (speedMillis > 0) {
+            double difficultyRate = switch (difficulty) {
+                case 'E' -> 0.8;
+                case 'N' -> 1.0;
+                case 'H' -> 1.25;
+                default -> throw new IllegalStateException("Difficulty was not validated");
+            };
+            speed = 1000.0 / speedMillis * difficultyRate;
+            noBorder = false; // Ghost is the only way to cross a level boundary.
+        }
 
         if (height > 50) {
             multiplier = 10;
