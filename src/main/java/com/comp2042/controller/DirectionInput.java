@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 final class DirectionInput {
     private KeyCode current = KeyCode.LEFT;
     private boolean changedThisTick;
+    private boolean needsTurnAfterShield;
 
     KeyCode current() {
         return current;
@@ -17,7 +18,16 @@ final class DirectionInput {
         }
         current = next;
         changedThisTick = true;
+        needsTurnAfterShield = false;
         return true;
+    }
+
+    void requireTurnAfterShield() {
+        needsTurnAfterShield = true;
+    }
+
+    boolean needsTurnAfterShield() {
+        return needsTurnAfterShield;
     }
 
     void nextTick() {
@@ -27,6 +37,7 @@ final class DirectionInput {
     void reset() {
         current = KeyCode.LEFT;
         changedThisTick = false;
+        needsTurnAfterShield = false;
     }
 
     static boolean isValidDirection(KeyCode current, KeyCode next) {

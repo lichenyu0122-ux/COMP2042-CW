@@ -65,6 +65,11 @@ public class GameController {
             GameSession.Pickup pickup = result == GameSession.MoveResult.MOVED
                     ? session.finishMove() : GameSession.Pickup.NONE;
 
+            if (result == GameSession.MoveResult.SHIELDED) {
+                direction.requireTurnAfterShield();
+                animation.pause();
+            }
+
             if (pickup == GameSession.Pickup.REWARD) {
                 powerCoin();
                 if (game.gameWon()) {
@@ -90,8 +95,9 @@ public class GameController {
             gameView.gameWon();
             gameView.gameOver(snek);
             gameView.updateScoreLabel();
-            gameView.updateEffectLabel(session.effects(), poisonNoticeTicks > 0
-                    ? "POISON: -2 body, -10 pts" : "");
+            gameView.updateEffectLabel(session.effects(), direction.needsTurnAfterShield()
+                    ? "SHIELD SAVED YOU - TURN TO CONTINUE"
+                    : poisonNoticeTicks > 0 ? "POISON: -2 body, -10 pts" : "");
             if (poisonNoticeTicks > 0) poisonNoticeTicks--;
         }
     }
@@ -106,11 +112,16 @@ public class GameController {
         }
 
         KeyCode previousKey = direction.current();
+        boolean recoveringFromShield = direction.needsTurnAfterShield();
         if (direction.tryTurn(event.getCode())) {
             gameView.turnDir(snek, previousKey, direction.current());
+            if (recoveringFromShield && !snek.getDead() && !game.gameWon()) {
+                gameView.updateEffectLabel(session.effects());
+                animation.play();
+            }
         }
 
-        if (event.getCode().equals(KeyCode.P)) {
+        if (event.getCode().equals(KeyCode.P) && !direction.needsTurnAfterShield()) {
             if (animation.getStatus() == Animation.Status.RUNNING) {
                 animation.pause();
             } else if (animation.getStatus() == Animation.Status.PAUSED

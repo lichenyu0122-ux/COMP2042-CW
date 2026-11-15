@@ -46,9 +46,26 @@ class DirectionInputTest {
     void resetRestoresInitialDirectionAndTurnAllowance() {
         DirectionInput input = new DirectionInput();
         assertTrue(input.tryTurn(KeyCode.UP));
+        input.requireTurnAfterShield();
         input.reset();
 
         assertTrue(input.current() == KeyCode.LEFT);
+        assertFalse(input.needsTurnAfterShield());
         assertTrue(input.tryTurn(KeyCode.DOWN));
+    }
+
+    @Test
+    void shieldRecoveryWaitsForAValidNewDirection() {
+        DirectionInput input = new DirectionInput();
+        input.requireTurnAfterShield();
+        input.nextTick();
+
+        assertFalse(input.tryTurn(KeyCode.P));
+        assertFalse(input.tryTurn(KeyCode.LEFT));
+        assertFalse(input.tryTurn(KeyCode.RIGHT));
+        assertTrue(input.needsTurnAfterShield());
+
+        assertTrue(input.tryTurn(KeyCode.UP));
+        assertFalse(input.needsTurnAfterShield());
     }
 }
