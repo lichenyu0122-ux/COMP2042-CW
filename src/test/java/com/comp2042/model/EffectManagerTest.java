@@ -14,13 +14,15 @@ class EffectManagerTest {
         effects.activate(PowerUpFactory.create(EffectType.SLOW));
         effects.activate(PowerUpFactory.create(EffectType.GHOST));
         assertEquals(8, effects.remaining(EffectType.SLOW));
-        assertEquals(6, effects.remaining(EffectType.GHOST));
+        assertEquals(20, effects.remaining(EffectType.GHOST));
         for (int i = 0; i < 6; i++) effects.tick();
-        assertFalse(effects.isActive(EffectType.GHOST));
+        assertEquals(14, effects.remaining(EffectType.GHOST));
         assertTrue(effects.isActive(EffectType.SLOW));
         effects.tick();
         effects.tick();
         assertEquals(1.0, effects.speedMultiplier());
+        for (int i = 8; i < 20; i++) effects.tick();
+        assertFalse(effects.isActive(EffectType.GHOST));
     }
 
     @Test void shieldCancelsWallOrBodyCollisionOnlyOnce() {
@@ -59,16 +61,18 @@ class EffectManagerTest {
         assertEquals(GameSession.MoveResult.DEAD, body.move('R'));
     }
 
-    @Test void ghostStopsWrappingAfterSixMoves() {
+    @Test void ghostStopsWrappingAfterTwentyMoves() {
         GameSession session = new GameSession(new Game(4, 4, true, 'N'));
         session.replaceCoin(new Coin(new Point(0, 0)));
         session.effects().activate(new GhostEffect());
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 20; i++) {
             assertEquals(GameSession.MoveResult.MOVED, session.move('U'));
             session.finishMove();
         }
         assertEquals(0, session.effects().remaining(EffectType.GHOST));
-        assertEquals(new Point(2, 0), session.snake().getHead());
+        assertEquals(new Point(2, 2), session.snake().getHead());
+        assertEquals(GameSession.MoveResult.MOVED, session.move('U'));
+        assertEquals(GameSession.MoveResult.MOVED, session.move('U'));
         assertEquals(GameSession.MoveResult.DEAD, session.move('U'));
     }
 
@@ -77,13 +81,30 @@ class EffectManagerTest {
         session.replaceCoin(new Coin(new Point(0, 0)));
         for (int x = 3; x <= 9; x++) session.obstacle().getObstacles().add(new Point(x, 10));
         session.effects().activate(new GhostEffect());
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 20; i++) {
             assertEquals(GameSession.MoveResult.MOVED, session.move('L'));
             session.finishMove();
         }
-        assertEquals(new Point(4, 10), session.snake().getHead());
+        assertEquals(new Point(10, 10), session.snake().getHead());
         assertEquals(0, session.effects().remaining(EffectType.GHOST));
         assertEquals(GameSession.MoveResult.DEAD, session.move('L'));
+    }
+
+    @Test void bluePickupKeepsGhostActiveLongEnoughToReachAndPassAWall() {
+        GameSession session = new GameSession(new Game(20, 20, true, 'N'));
+        session.replaceCoin(new BlueCoin(new Point(9, 10)));
+        session.obstacle().getObstacles().add(new Point(0, 10));
+
+        assertEquals(GameSession.MoveResult.MOVED, session.move('L'));
+        assertEquals(GameSession.Pickup.REWARD, session.finishMove());
+        assertEquals(20, session.effects().remaining(EffectType.GHOST));
+
+        for (int i = 0; i < 9; i++) {
+            assertEquals(GameSession.MoveResult.MOVED, session.move('L'));
+        }
+        assertEquals(new Point(0, 10), session.snake().getHead());
+        assertFalse(session.snake().getDead());
+        assertEquals(11, session.effects().remaining(EffectType.GHOST));
     }
 
     @Test void resetRemovesEffects() {
@@ -105,7 +126,7 @@ class EffectManagerTest {
         session.collectCoin();
         assertEquals(20, session.effects().remaining(EffectType.SHIELD));
         assertEquals(8, session.effects().remaining(EffectType.SLOW));
-        assertEquals(6, session.effects().remaining(EffectType.GHOST));
+        assertEquals(20, session.effects().remaining(EffectType.GHOST));
         assertEquals(3, session.game().getScore());
     }
 }

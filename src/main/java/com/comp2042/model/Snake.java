@@ -33,59 +33,26 @@ public class Snake {
         body.forEach(point -> previousBody.add(new Point(point)));
         body.add(new Point(head));
         switch (dir) {
-            case 'U':
-                snakeDir = 0;
-                head.translate(0, -1);
-                if (borderControl() && (!ghostMode && !noBorder)
-                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
-                    head.translate(0, 1);
-                    dead = true;
-                } else if (borderControl() && (ghostMode || noBorder)) {
-                    head.setLocation(head.getX(), gy - 1);
-                }
-                break;
-
-            case 'D':
-                snakeDir = 180;
-                head.translate(0, 1);
-                if (borderControl() && (!ghostMode && !noBorder)
-                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
-                    head.translate(0, -1);
-                    dead = true;
-                } else if (borderControl() && (ghostMode || noBorder)) {
-                    head.setLocation(head.getX(), 0);
-                }
-                break;
-
-            case 'L':
-                snakeDir = 270;
-                head.translate(-1, 0);
-                if (borderControl() && (!ghostMode && !noBorder)
-                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
-                    head.translate(1, 0);
-                    dead = true;
-                } else if (borderControl() && (ghostMode || noBorder)) {
-                    head.setLocation(gx - 1, head.getY());
-                }
-                break;
-
-            case 'R':
-                snakeDir = 90;
-                head.translate(1, 0);
-                if (borderControl() && (!ghostMode && !noBorder)
-                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
-                    head.translate(-1, 0);
-                    dead = true;
-                } else if (borderControl() && (ghostMode || noBorder)) {
-                    head.setLocation(0, head.getY());
-                }
-                break;
+            case 'U' -> { snakeDir = 0; head.translate(0, -1); }
+            case 'D' -> { snakeDir = 180; head.translate(0, 1); }
+            case 'L' -> { snakeDir = 270; head.translate(-1, 0); }
+            case 'R' -> { snakeDir = 90; head.translate(1, 0); }
+            default -> throw new IllegalArgumentException("Unknown direction: " + dir);
         }
 
-        if (!ghostMode && obstacle.getObstacles().contains(head)) {
+        if (borderControl()) {
+            if (ghostMode || noBorder) {
+                head.setLocation(Math.floorMod(head.x, gx), Math.floorMod(head.y, gy));
+            } else {
+                head.setLocation(previousHead);
+                dead = true;
+            }
+        }
+        if (!dead && !ghostMode && obstacle.getObstacles().contains(head)) {
+            head.setLocation(previousHead);
             dead = true;
         }
-        if (hitSelf() && !body.get(0).equals(head)) {
+        if (!dead && hitSelf() && !body.get(0).equals(head)) {
             dead = true;
         }
     }
