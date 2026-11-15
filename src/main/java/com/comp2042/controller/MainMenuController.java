@@ -7,12 +7,12 @@ import com.comp2042.model.Level;
 import com.comp2042.model.LevelCatalog;
 import com.comp2042.view.GameView;
 import com.comp2042.view.ViewManager;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.Map;
 
@@ -61,20 +61,27 @@ public class MainMenuController {
         GameView gameView = new GameView(game, level);
         GameController controller = new GameController(session, gameView, viewManager);
 
-        StackPane gamePane = new StackPane();
-        gameScene = new Scene(gamePane, game.getWidth() * game.getMultiplier(), game.getHeight() * game.getMultiplier());
+        double boardWidth = game.getWidth() * game.getMultiplier();
+        double boardHeight = game.getHeight() * game.getMultiplier();
+        VBox gamePane = new VBox();
+        gameScene = new Scene(gamePane, boardWidth, boardHeight + 32);
 
         gameScene.setOnKeyPressed(controller::handle);
 
-        gameView.makeScene(gameScene, session.snake(), session.coin(),
+        gameView.makeScene(session.snake(), session.coin(),
                 session.poisonCoin(), session.obstacle());
-        gamePane.getChildren().addAll(gameView.gridCanvas, gameView.gameOverLabel,
-                gameView.gameWonLabel, gameView.scoreLabel, gameView.effectLabel);
-        gamePane.setPadding(new Insets(20));
-        gamePane.setAlignment(gameView.gameOverLabel, Pos.TOP_CENTER);
-        gamePane.setAlignment(gameView.gameWonLabel, Pos.TOP_CENTER);
-        gamePane.setAlignment(gameView.scoreLabel, Pos.BOTTOM_CENTER);
-        gamePane.setAlignment(gameView.effectLabel, Pos.TOP_LEFT);
+        StackPane boardPane = new StackPane(gameView.gridCanvas, gameView.gameOverLabel,
+                gameView.gameWonLabel, gameView.effectLabel);
+        boardPane.prefWidthProperty().bind(gameView.gridCanvas.widthProperty());
+        boardPane.prefHeightProperty().bind(gameView.gridCanvas.heightProperty());
+        boardPane.maxWidthProperty().bind(gameView.gridCanvas.widthProperty());
+        boardPane.maxHeightProperty().bind(gameView.gridCanvas.heightProperty());
+        StackPane.setAlignment(gameView.gameOverLabel, Pos.TOP_CENTER);
+        StackPane.setAlignment(gameView.gameWonLabel, Pos.TOP_CENTER);
+        StackPane.setAlignment(gameView.effectLabel, Pos.TOP_LEFT);
+        gameView.scoreLabel.prefWidthProperty().bind(gameView.gridCanvas.widthProperty());
+        gamePane.setAlignment(Pos.CENTER);
+        gamePane.getChildren().addAll(boardPane, gameView.scoreLabel);
     }
 
     public ViewManager getViewManager() {

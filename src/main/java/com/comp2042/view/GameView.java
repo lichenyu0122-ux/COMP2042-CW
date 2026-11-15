@@ -14,7 +14,8 @@ import com.comp2042.model.SlowCoin;
 import com.comp2042.model.PoisonCoin;
 import com.comp2042.model.EffectManager;
 import com.comp2042.model.EffectType;
-import javafx.scene.Scene;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,6 +25,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -69,11 +72,11 @@ public class GameView {
         this.turnArray = new int[game.getWidth()][game.getHeight()];
     }
 
-    public void makeScene(Scene scene, Snake snek, Coin coin, PoisonCoin poison, Obstacle obstacle) {
-        Scene gameScene = scene;
-        gridCanvas = new Canvas(gameScene.getWidth(), gameScene.getHeight());
-        initX = scene.getWidth();
-        initY = scene.getHeight();
+    public void makeScene(Snake snek, Coin coin, PoisonCoin poison, Obstacle obstacle) {
+        gridCanvas = new Canvas(game.getWidth() * game.getMultiplier(),
+                game.getHeight() * game.getMultiplier());
+        initX = gridCanvas.getWidth();
+        initY = gridCanvas.getHeight();
         gc = gridCanvas.getGraphicsContext2D();
         drawGrid(coin, poison, snek, obstacle, gc);
 
@@ -92,7 +95,11 @@ public class GameView {
         scoreLabel.setId("scoreLabel");
         scoreLabel.getStylesheets().add(css);
         scoreLabel.setFont(new Font("Arial", 15));
-        scoreLabel.setStyle("-fx-font-size: 15px;");
+        scoreLabel.setStyle("-fx-font-size: 15px; -fx-background-color: #feffe4;");
+        scoreLabel.setPrefWidth(initX);
+        scoreLabel.setMinHeight(32);
+        scoreLabel.setMaxHeight(32);
+        scoreLabel.setAlignment(Pos.CENTER);
         scoreLabel.setVisible(true);
         effectLabel = new Label("");
         effectLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #174656; -fx-background-color: #feffe4;");
@@ -103,7 +110,10 @@ public class GameView {
                                   Snake snek, Coin coin, PoisonCoin poison) {
         primaryStage.setFullScreen(fullScreen);
 
-        double xScaling = Screen.getPrimary().getVisualBounds().getHeight() / initY;
+        double hudHeight = fullScreen ? 48 : 32;
+        scoreLabel.setMinHeight(hudHeight);
+        scoreLabel.setMaxHeight(hudHeight);
+        double xScaling = (Screen.getPrimary().getVisualBounds().getHeight() - hudHeight) / initY;
         double yScaling = Screen.getPrimary().getVisualBounds().getWidth() / initX;
 
         if (fullScreen && !fullsize) {
@@ -159,6 +169,22 @@ public class GameView {
                     : coin instanceof SlowCoin ? Color.ORANGE : Color.PURPLE);
             gc.fillOval(x, y, size, size);
         } else gc.drawImage(coinImage(coin), x, y, size, size);
+
+        String marker = coin instanceof BlueCoin ? "G"
+                : coin instanceof ShieldCoin ? "S"
+                : coin instanceof PoisonCoin ? "!" : null;
+        if (marker != null) {
+            gc.save();
+            gc.setFont(Font.font("Arial", FontWeight.BOLD, 12 * fullScale));
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setTextBaseline(VPos.CENTER);
+            gc.setLineWidth(Math.max(1, fullScale));
+            gc.setStroke(Color.BLACK);
+            gc.strokeText(marker, x + size / 2, y + size / 2);
+            gc.setFill(Color.WHITE);
+            gc.fillText(marker, x + size / 2, y + size / 2);
+            gc.restore();
+        }
     }
 
     private Image coinImage(Coin coin) {
@@ -267,12 +293,22 @@ public class GameView {
     }
 
     public void updateEffectLabel(EffectManager effects) {
+        updateEffectLabel(effects, "");
+    }
+
+    public void updateEffectLabel(EffectManager effects, String notice) {
         StringBuilder text = new StringBuilder();
+        if (!notice.isBlank()) text.append(notice);
         for (EffectType type : EffectType.values()) {
             int remaining = effects.remaining(type);
             if (remaining > 0) {
-                if (!text.isEmpty()) text.append("  |  ");
-                text.append(type.name()).append(' ').append(remaining);
+                if (!text.isEmpty()) text.append('\n');
+                text.append(type.name()).append(' ').append(remaining).append(" moves: ");
+                text.append(switch (type) {
+                    case SHIELD -> "blocks one hit";
+                    case SLOW -> "half speed";
+                    case GHOST -> "pass walls";
+                });
             }
         }
         effectLabel.setText(text.toString());

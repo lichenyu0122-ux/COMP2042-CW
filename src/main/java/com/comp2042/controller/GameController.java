@@ -34,6 +34,7 @@ public class GameController {
     private final DirectionInput direction = new DirectionInput();
     private final Timeline animation;
     private double rainbowBonus;
+    private int poisonNoticeTicks;
 
     public GameController(GameSession session, GameView gameView, ViewManager viewManager) {
         this.session = session;
@@ -61,9 +62,10 @@ public class GameController {
                 default -> throw new IllegalStateException("No direction selected");
             };
             GameSession.MoveResult result = session.move(move);
+            GameSession.Pickup pickup = result == GameSession.MoveResult.MOVED
+                    ? session.finishMove() : GameSession.Pickup.NONE;
 
-            if (result == GameSession.MoveResult.MOVED
-                    && session.finishMove() == GameSession.Pickup.REWARD) {
+            if (pickup == GameSession.Pickup.REWARD) {
                 powerCoin();
                 if (game.gameWon()) {
                     gameView.drawGrid(coin, session.poisonCoin(), snek, obstacle, gameView.gc);
@@ -74,6 +76,8 @@ public class GameController {
                     return;
                 }
                 newCoin();
+            } else if (pickup == GameSession.Pickup.POISON) {
+                poisonNoticeTicks = 12;
             }
             animation.setRate((game.getSpeed() + rainbowBonus) * session.effects().speedMultiplier());
 
@@ -86,7 +90,9 @@ public class GameController {
             gameView.gameWon();
             gameView.gameOver(snek);
             gameView.updateScoreLabel();
-            gameView.updateEffectLabel(session.effects());
+            gameView.updateEffectLabel(session.effects(), poisonNoticeTicks > 0
+                    ? "POISON: -2 body, -10 pts" : "");
+            if (poisonNoticeTicks > 0) poisonNoticeTicks--;
         }
     }
 
@@ -149,6 +155,7 @@ public class GameController {
         session.reset();
 
         rainbowBonus = 0;
+        poisonNoticeTicks = 0;
         animation.setRate(game.getSpeed());
         direction.reset();
 
