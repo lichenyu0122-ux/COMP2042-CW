@@ -42,7 +42,7 @@ public final class GameSession {
     public enum Pickup { NONE, REWARD, POISON }
 
     public MoveResult move(char direction) {
-        snake.ignoreBorders(effects.isActive(EffectType.GHOST));
+        snake.setGhostMode(effects.isActive(EffectType.GHOST));
         snake.move(direction);
         MoveResult result = MoveResult.MOVED;
         if (snake.getDead()) {

@@ -39,18 +39,19 @@ class EffectManagerTest {
         assertFalse(body.snake().getDead());
     }
 
-    @Test void ghostWrapsAtBorderButDoesNotPreventSelfCollision() {
+    @Test void ghostPassesWallsAndWrapsBorderButDoesNotPreventSelfCollision() {
         GameSession wrap = new GameSession(new Game(4, 4, true, 'N'));
         wrap.effects().activate(new GhostEffect());
         wrap.move('U'); wrap.move('U');
         assertEquals(GameSession.MoveResult.MOVED, wrap.move('U'));
         assertEquals(new Point(2, 3), wrap.snake().getHead());
 
-        GameSession blockedExit = new GameSession(new Game(4, 4, true, 'N'));
-        blockedExit.obstacle().getObstacles().add(new Point(2, 3));
-        blockedExit.effects().activate(new GhostEffect());
-        blockedExit.move('U'); blockedExit.move('U');
-        assertEquals(GameSession.MoveResult.DEAD, blockedExit.move('U'));
+        GameSession wallExit = new GameSession(new Game(4, 4, true, 'N'));
+        wallExit.obstacle().getObstacles().add(new Point(2, 3));
+        wallExit.effects().activate(new GhostEffect());
+        wallExit.move('U'); wallExit.move('U');
+        assertEquals(GameSession.MoveResult.MOVED, wallExit.move('U'));
+        assertEquals(new Point(2, 3), wallExit.snake().getHead());
 
         GameSession body = new GameSession(new Game(12, 12, true, 'N'));
         body.effects().activate(new GhostEffect());
@@ -69,6 +70,20 @@ class EffectManagerTest {
         assertEquals(0, session.effects().remaining(EffectType.GHOST));
         assertEquals(new Point(2, 0), session.snake().getHead());
         assertEquals(GameSession.MoveResult.DEAD, session.move('U'));
+    }
+
+    @Test void ghostPassesStaticWallsOnlyWhileActive() {
+        GameSession session = new GameSession(new Game(20, 20, true, 'N'));
+        session.replaceCoin(new Coin(new Point(0, 0)));
+        for (int x = 3; x <= 9; x++) session.obstacle().getObstacles().add(new Point(x, 10));
+        session.effects().activate(new GhostEffect());
+        for (int i = 0; i < 6; i++) {
+            assertEquals(GameSession.MoveResult.MOVED, session.move('L'));
+            session.finishMove();
+        }
+        assertEquals(new Point(4, 10), session.snake().getHead());
+        assertEquals(0, session.effects().remaining(EffectType.GHOST));
+        assertEquals(GameSession.MoveResult.DEAD, session.move('L'));
     }
 
     @Test void resetRemovesEffects() {

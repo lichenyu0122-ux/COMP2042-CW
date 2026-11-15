@@ -91,7 +91,8 @@ public class GameView {
         scoreLabel = new Label(scoreText());
         scoreLabel.setId("scoreLabel");
         scoreLabel.getStylesheets().add(css);
-        scoreLabel.setFont(new Font("Arial", 20));
+        scoreLabel.setFont(new Font("Arial", 15));
+        scoreLabel.setStyle("-fx-font-size: 15px;");
         scoreLabel.setVisible(true);
         effectLabel = new Label("");
         effectLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #174656; -fx-background-color: #feffe4;");
@@ -130,6 +131,12 @@ public class GameView {
         gc.setFill(GRID_COLOR);
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
+        gc.setFill(OBSTACLE_COLOR);
+        for (Point point : obstacle.getObstacles()) {
+            gc.fillRect(point.x * game.getMultiplier() * fullScale, point.y * game.getMultiplier() * fullScale,
+                    game.getMultiplier() * fullScale, game.getMultiplier() * fullScale);
+        }
+
         drawCoin(coin);
         if (poison != null) drawCoin(poison);
 
@@ -141,10 +148,6 @@ public class GameView {
 
         drawHead(snek);
 
-        gc.setFill(OBSTACLE_COLOR);
-        for (Point point : obstacle.getObstacles()) {
-            gc.fillRect(point.x * game.getMultiplier() * fullScale, point.y * game.getMultiplier() * fullScale, game.getMultiplier() * fullScale, game.getMultiplier() * fullScale);
-        }
     }
 
     private void drawCoin(Coin coin) {
@@ -276,9 +279,9 @@ public class GameView {
     }
 
     private String scoreText() {
-        return (level == null ? "" : level.name() + "  ")
-                + "Score: " + game.getScorePoints()
-                + (level == null ? "" : "  Coins: " + game.getScore() + "/" + game.getTargetScore());
+        if (level == null) return "Score: " + game.getScorePoints();
+        return level.name() + " " + game.getScore() + "/" + game.getTargetScore()
+                + " | " + game.getScorePoints() + " pts";
     }
 
 }

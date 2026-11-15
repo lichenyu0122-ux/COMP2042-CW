@@ -9,7 +9,7 @@ public class Snake {
     private final ArrayList<Point> body = new ArrayList<>();
     private final int gx;
     private final int gy;
-    private boolean ignoreBorders = false;
+    private boolean ghostMode = false;
     private boolean noBorder;
     private Obstacle obstacle;
     private int snakeDir = 270;
@@ -36,10 +36,11 @@ public class Snake {
             case 'U':
                 snakeDir = 0;
                 head.translate(0, -1);
-                if (borderControl() && (!ignoreBorders && !noBorder) || obstacle.getObstacles().contains(head)) {
+                if (borderControl() && (!ghostMode && !noBorder)
+                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
                     head.translate(0, 1);
                     dead = true;
-                } else if (borderControl() && (ignoreBorders || noBorder)) {
+                } else if (borderControl() && (ghostMode || noBorder)) {
                     head.setLocation(head.getX(), gy - 1);
                 }
                 break;
@@ -47,10 +48,11 @@ public class Snake {
             case 'D':
                 snakeDir = 180;
                 head.translate(0, 1);
-                if (borderControl() && (!ignoreBorders && !noBorder) || obstacle.getObstacles().contains(head)) {
+                if (borderControl() && (!ghostMode && !noBorder)
+                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
                     head.translate(0, -1);
                     dead = true;
-                } else if (borderControl() && (ignoreBorders || noBorder)) {
+                } else if (borderControl() && (ghostMode || noBorder)) {
                     head.setLocation(head.getX(), 0);
                 }
                 break;
@@ -58,10 +60,11 @@ public class Snake {
             case 'L':
                 snakeDir = 270;
                 head.translate(-1, 0);
-                if (borderControl() && (!ignoreBorders && !noBorder) || obstacle.getObstacles().contains(head)) {
+                if (borderControl() && (!ghostMode && !noBorder)
+                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
                     head.translate(1, 0);
                     dead = true;
-                } else if (borderControl() && (ignoreBorders || noBorder)) {
+                } else if (borderControl() && (ghostMode || noBorder)) {
                     head.setLocation(gx - 1, head.getY());
                 }
                 break;
@@ -69,16 +72,17 @@ public class Snake {
             case 'R':
                 snakeDir = 90;
                 head.translate(1, 0);
-                if (borderControl() && (!ignoreBorders && !noBorder) || obstacle.getObstacles().contains(head)) {
+                if (borderControl() && (!ghostMode && !noBorder)
+                        || (!ghostMode && obstacle.getObstacles().contains(head))) {
                     head.translate(-1, 0);
                     dead = true;
-                } else if (borderControl() && (ignoreBorders || noBorder)) {
+                } else if (borderControl() && (ghostMode || noBorder)) {
                     head.setLocation(0, head.getY());
                 }
                 break;
         }
 
-        if (obstacle.getObstacles().contains(head)) {
+        if (!ghostMode && obstacle.getObstacles().contains(head)) {
             dead = true;
         }
         if (hitSelf() && !body.get(0).equals(head)) {
@@ -139,8 +143,8 @@ public class Snake {
         body.subList(0, removed).clear();
     }
 
-    public void ignoreBorders(boolean ign) {
-        ignoreBorders = ign;
+    public void setGhostMode(boolean active) {
+        ghostMode = active;
     }
 
     public int getSnakeDir() {
