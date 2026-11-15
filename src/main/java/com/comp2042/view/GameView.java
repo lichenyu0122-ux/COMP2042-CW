@@ -69,13 +69,13 @@ public class GameView {
         this.turnArray = new int[game.getWidth()][game.getHeight()];
     }
 
-    public void makeScene(Scene scene, Snake snek, Coin coin, Obstacle obstacle) {
+    public void makeScene(Scene scene, Snake snek, Coin coin, PoisonCoin poison, Obstacle obstacle) {
         Scene gameScene = scene;
         gridCanvas = new Canvas(gameScene.getWidth(), gameScene.getHeight());
         initX = scene.getWidth();
         initY = scene.getHeight();
         gc = gridCanvas.getGraphicsContext2D();
-        drawGrid(coin, snek, obstacle, gc, false, 0);
+        drawGrid(coin, poison, snek, obstacle, gc);
 
         gameOverLabel = new Label("GAME OVER");
         gameOverLabel.setId("gameOverLabel");
@@ -98,7 +98,8 @@ public class GameView {
         effectLabel.setMouseTransparent(true);
     }
 
-    public void scaleToFullscreen(boolean fullScreen, Stage primaryStage, Obstacle obstacle, Snake snek, Coin coin) {
+    public void scaleToFullscreen(boolean fullScreen, Stage primaryStage, Obstacle obstacle,
+                                  Snake snek, Coin coin, PoisonCoin poison) {
         primaryStage.setFullScreen(fullScreen);
 
         double xScaling = Screen.getPrimary().getVisualBounds().getHeight() / initY;
@@ -122,14 +123,15 @@ public class GameView {
 
         gameOverLabel.setFont(new Font("Arial", 25 * fullScale));
         gameWonLabel.setFont(new Font("Arial", 25 * fullScale));
-        drawGrid(coin, snek, obstacle, gc, false, 0);
+        drawGrid(coin, poison, snek, obstacle, gc);
     }
 
-    public void drawGrid(Coin coin, Snake snek, Obstacle obstacle, GraphicsContext gc, boolean a, int b) {
+    public void drawGrid(Coin coin, PoisonCoin poison, Snake snek, Obstacle obstacle, GraphicsContext gc) {
         gc.setFill(GRID_COLOR);
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
 
         drawCoin(coin);
+        if (poison != null) drawCoin(poison);
 
         int bodyIndex = 0;
         for (Point point : snek.getBody()) {

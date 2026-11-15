@@ -66,7 +66,8 @@ public class MainMenuController {
 
         gameScene.setOnKeyPressed(controller::handle);
 
-        gameView.makeScene(gameScene, session.snake(), session.coin(), session.obstacle());
+        gameView.makeScene(gameScene, session.snake(), session.coin(),
+                session.poisonCoin(), session.obstacle());
         gamePane.getChildren().addAll(gameView.gridCanvas, gameView.gameOverLabel,
                 gameView.gameWonLabel, gameView.scoreLabel, gameView.effectLabel);
         gamePane.setPadding(new Insets(20));

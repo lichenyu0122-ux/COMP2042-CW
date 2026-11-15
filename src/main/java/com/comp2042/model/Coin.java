@@ -1,23 +1,34 @@
 package com.comp2042.model;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Coin {
-    private Point pos;
+    private final Point pos;
 
     protected Coin(Point position) { pos = new Point(position); }
 
     public Coin(int x, int y, Snake snek, Obstacle obstacle) {
-        int tx;
-        int ty;
-        do {
-            Random rnd = new Random();
+        this(x, y, snek, obstacle, null);
+    }
 
-            tx = rnd.nextInt(x);
-            ty = rnd.nextInt(y);
-            pos = new Point(tx, ty);
-        } while (snek.getHead().equals(pos) || snek.getBody().contains(pos) || obstacle.getObstacles().contains(pos));
+    protected Coin(int x, int y, Snake snek, Obstacle obstacle, Point excluded) {
+        ArrayList<Point> free = new ArrayList<>();
+        Point head = snek.getHead();
+        ArrayList<Point> body = snek.getBody();
+        ArrayList<Point> walls = obstacle.getObstacles();
+        for (int column = 0; column < x; column++) {
+            for (int row = 0; row < y; row++) {
+                Point candidate = new Point(column, row);
+                if (!candidate.equals(head) && !body.contains(candidate)
+                        && !walls.contains(candidate) && !candidate.equals(excluded)) {
+                    free.add(candidate);
+                }
+            }
+        }
+        if (free.isEmpty()) throw new IllegalStateException("No free cell for coin");
+        pos = free.get(new Random().nextInt(free.size()));
     }
 
     public Point getPos() {

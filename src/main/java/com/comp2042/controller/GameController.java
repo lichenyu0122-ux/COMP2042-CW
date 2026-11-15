@@ -62,11 +62,11 @@ public class GameController {
             };
             GameSession.MoveResult result = session.move(move);
 
-            if (result == GameSession.MoveResult.MOVED && snek.ateCoin(coin)) {
+            if (result == GameSession.MoveResult.MOVED
+                    && session.finishMove() == GameSession.Pickup.REWARD) {
                 powerCoin();
-                session.collectCoin();
                 if (game.gameWon()) {
-                    gameView.drawGrid(coin, snek, obstacle, gameView.gc, false, 0);
+                    gameView.drawGrid(coin, session.poisonCoin(), snek, obstacle, gameView.gc);
                     gameView.gameWon();
                     gameView.updateScoreLabel();
                     gameView.updateEffectLabel(session.effects());
@@ -80,7 +80,7 @@ public class GameController {
             direction.nextTick();
 
             if (!snek.getDead() || snek.hitSelf()) {
-                gameView.drawGrid(session.coin(), snek, obstacle, gameView.gc, false, 0);
+                gameView.drawGrid(session.coin(), session.poisonCoin(), snek, obstacle, gameView.gc);
             }
 
             gameView.gameWon();
@@ -110,14 +110,16 @@ public class GameController {
         }
 
         if (event.getCode().equals(KeyCode.PLUS)) {
-            gameView.scaleToFullscreen(true, viewManager.getGameStage(), obstacle, snek, coin);
+            gameView.scaleToFullscreen(true, viewManager.getGameStage(), obstacle,
+                    snek, coin, session.poisonCoin());
             gameView.gameOverLabel.setStyle("-fx-font-size: 50;");
             gameView.gameWonLabel.setStyle("-fx-font-size: 50;");
             gameView.scoreLabel.setStyle("-fx-font-size: 35;");
         }
 
         if (event.getCode().equals(KeyCode.MINUS)) {
-            gameView.scaleToFullscreen(false, viewManager.getGameStage(), obstacle, snek, coin);
+            gameView.scaleToFullscreen(false, viewManager.getGameStage(), obstacle,
+                    snek, coin, session.poisonCoin());
             gameView.gameOverLabel.setStyle("-fx-font-size: 15;");
             gameView.gameWonLabel.setStyle("-fx-font-size: 15;");
             gameView.scoreLabel.setStyle("-fx-font-size: 15;");
@@ -145,7 +147,7 @@ public class GameController {
         gameView.updateScoreLabel();
         gameView.updateEffectLabel(session.effects());
 
-        gameView.drawGrid(session.coin(), session.snake(), obstacle, gameView.gc, false, 0);
+        gameView.drawGrid(session.coin(), session.poisonCoin(), session.snake(), obstacle, gameView.gc);
     }
 
     private void powerCoin() {
@@ -165,7 +167,7 @@ public class GameController {
         Snake snek = session.snake();
         boolean powerUp = game.isPowerUp();
         int roll = powerUp ? new Random().nextInt(20) : -1;
-        boolean hasObstacles = !obstacle.getObstacles().isEmpty();
+        boolean hasObstacles = session.poisonCoin() != null || !obstacle.getObstacles().isEmpty();
 
         CoinSpawnPolicy.CoinType type =
                 CoinSpawnPolicy.select(powerUp, roll, hasObstacles);
@@ -184,7 +186,13 @@ public class GameController {
             case SLOW ->
                     session.replaceCoin(new SlowCoin(game.getWidth(), game.getHeight(), snek, obstacle));
             case POISON ->
-                    session.replaceCoin(new PoisonCoin(game.getWidth(), game.getHeight(), snek, obstacle));
+            {
+                session.replaceCoin(new Coin(game.getWidth(), game.getHeight(), snek, obstacle));
+                if (session.poisonCoin() == null) {
+                    session.placePoisonCoin(new PoisonCoin(game.getWidth(), game.getHeight(),
+                            snek, obstacle, session.coin()));
+                }
+            }
             case REGULAR ->
                     session.replaceCoin(new Coin(game.getWidth(), game.getHeight(), snek, obstacle));
         }
