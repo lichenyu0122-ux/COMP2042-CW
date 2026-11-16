@@ -106,7 +106,7 @@ public class Snake {
 
     public void shrink(int segments) {
         if (segments < 0) throw new IllegalArgumentException("segments must be non-negative");
-        int removed = Math.min(segments, body.size());
+        int removed = Math.max(0, Math.min(segments, body.size() - 1));
         body.subList(0, removed).clear();
     }
 

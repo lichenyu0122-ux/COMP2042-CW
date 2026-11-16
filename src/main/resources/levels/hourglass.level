@@ -1,6 +1,6 @@
 name: Hourglass
 target: 20
-speed: 200
+speed: 150
 cols: 20
 rows: 20
 ---

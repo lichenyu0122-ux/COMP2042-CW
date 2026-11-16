@@ -30,7 +30,7 @@ class PoisonCoinTest {
         GameSession session = new GameSession(new Game(8, 8, true, 'N'));
         Snake snake = session.snake();
         snake.shrink(100);
-        assertTrue(snake.getBody().isEmpty());
+        assertEquals(1, snake.getBody().size());
         Point next = new Point(snake.getHead().x - 1, snake.getHead().y);
         session.replaceCoin(new Coin(new Point(0, 0)));
         session.placePoisonCoin(new PoisonCoin(next));
@@ -38,7 +38,7 @@ class PoisonCoinTest {
         assertEquals(GameSession.Pickup.POISON, session.finishMove());
         assertEquals(next, snake.getHead());
         assertFalse(snake.getDead());
-        assertTrue(snake.getBody().isEmpty());
+        assertEquals(1, snake.getBody().size());
         assertEquals(0, session.game().getScorePoints());
         assertThrows(IllegalArgumentException.class, () -> snake.shrink(-1));
     }

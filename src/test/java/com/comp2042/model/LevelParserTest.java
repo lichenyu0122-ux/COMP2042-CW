@@ -33,6 +33,9 @@ class LevelParserTest {
         Map<String, Level> levels = LevelCatalog.load();
         assertEquals(3, levels.size());
         assertEquals(Set.of("Grassland", "Maze", "Hourglass"), levels.keySet());
+        assertEquals(200, levels.get("Grassland").speedMillis());
+        assertEquals(180, levels.get("Maze").speedMillis());
+        assertEquals(150, levels.get("Hourglass").speedMillis());
         for (Level level : levels.values()) {
             Game game = new Game(level.columns(), level.rows(), true, 'N', level.target(), level.speedMillis());
             GameSession session = new GameSession(game, level);

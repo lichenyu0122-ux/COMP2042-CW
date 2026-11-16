@@ -1,6 +1,6 @@
 name: Grassland
 target: 10
-speed: 150
+speed: 200
 cols: 20
 rows: 20
 ---
