@@ -16,7 +16,7 @@ public final class CoinSpawnPolicy {
     private CoinSpawnPolicy() {
     }
 
-    public static CoinType select(boolean powerUp, int roll, boolean hasObstacles) {
+    public static CoinType select(boolean powerUp, int roll, boolean silverBlocked) {
         if (!powerUp) {
             return CoinType.REGULAR;
         }
@@ -25,7 +25,7 @@ public final class CoinSpawnPolicy {
             case 1 -> CoinType.GOLD;
             case 2 -> CoinType.RAINBOW;
             case 3 -> CoinType.BLUE;
-            case 4 -> hasObstacles ? CoinType.REGULAR : CoinType.SILVER;
+            case 4 -> silverBlocked ? CoinType.REGULAR : CoinType.SILVER;
             case 5 -> CoinType.SHIELD;
             case 6 -> CoinType.SLOW;
             case 7 -> CoinType.POISON;

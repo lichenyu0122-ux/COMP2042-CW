@@ -25,6 +25,9 @@ import javafx.util.Duration;
 import java.util.Random;
 
 public class GameController {
+    private static final int POISON_NOTICE_TICKS = 12;
+    private static final String POISON_NOTICE = "POISON: -2 body, -10 pts";
+    private static final String SHIELD_NOTICE = "SHIELD SAVED YOU - TURN TO CONTINUE";
     private final GameSession session;
     private final GameView gameView;
     private final Game game;
@@ -32,6 +35,7 @@ public class GameController {
     private final Obstacle obstacle;
 
     private final DirectionInput direction = new DirectionInput();
+    private final Random random = new Random();
     private final Timeline animation;
     private double rainbowBonus;
     private int poisonNoticeTicks;
@@ -82,7 +86,7 @@ public class GameController {
                 }
                 newCoin();
             } else if (pickup == GameSession.Pickup.POISON) {
-                poisonNoticeTicks = 12;
+                poisonNoticeTicks = POISON_NOTICE_TICKS;
             }
             animation.setRate((game.getSpeed() + rainbowBonus) * session.effects().speedMultiplier());
 
@@ -96,8 +100,8 @@ public class GameController {
             gameView.gameOver(snek);
             gameView.updateScoreLabel();
             gameView.updateEffectLabel(session.effects(), direction.needsTurnAfterShield()
-                    ? "SHIELD SAVED YOU - TURN TO CONTINUE"
-                    : poisonNoticeTicks > 0 ? "POISON: -2 body, -10 pts" : "");
+                    ? SHIELD_NOTICE
+                    : poisonNoticeTicks > 0 ? POISON_NOTICE : "");
             if (poisonNoticeTicks > 0) poisonNoticeTicks--;
         }
     }
@@ -186,19 +190,18 @@ public class GameController {
             RainbowCoin tempCoin = (RainbowCoin) coin;
             rainbowBonus = tempCoin.getSpeedBonus();
         } else if (coin.getClass().equals(SilverCoin.class)){
-            Random rnd = new Random();
-            obstacle.newObstacles(snek, coin, rnd.nextInt(game.getWidth() * game.getHeight()/ 20) +3);
+            obstacle.newObstacles(snek, coin, random.nextInt(game.getWidth() * game.getHeight()/ 20) +3);
             game.decMaxScore(obstacle.getObstacles().size());
         }
     }
     private void newCoin() {
         Snake snek = session.snake();
         boolean powerUp = game.isPowerUp();
-        int roll = powerUp ? new Random().nextInt(20) : -1;
-        boolean hasObstacles = session.poisonCoin() != null || !obstacle.getObstacles().isEmpty();
+        int roll = powerUp ? random.nextInt(20) : -1;
+        boolean silverBlocked = session.poisonCoin() != null || !obstacle.getObstacles().isEmpty();
 
         CoinSpawnPolicy.CoinType type =
-                CoinSpawnPolicy.select(powerUp, roll, hasObstacles);
+                CoinSpawnPolicy.select(powerUp, roll, silverBlocked);
 
         switch (type) {
             case GOLD ->

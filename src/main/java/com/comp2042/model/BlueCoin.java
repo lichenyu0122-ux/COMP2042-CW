@@ -12,9 +12,4 @@ public class BlueCoin extends Coin {
         super(position);
     }
 
-    public int getPoints() {
-        int points = 5;
-        return points;
-    }
-
 }

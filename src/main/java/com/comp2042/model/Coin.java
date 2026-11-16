@@ -36,8 +36,7 @@ public class Coin {
     }
 
     public int getPoints() {
-        int points = 5;
-        return points;
+        return 5;
     }
 
 }

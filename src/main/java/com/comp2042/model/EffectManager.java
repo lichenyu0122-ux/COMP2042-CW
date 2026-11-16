@@ -14,7 +14,7 @@ public final class EffectManager {
         return effect == null ? 0 : effect.remaining();
     }
     public boolean consumeShield() { return active.remove(EffectType.SHIELD) != null; }
-    public double speedMultiplier() { return isActive(EffectType.SLOW) ? 0.5 : 1.0; }
+    public double speedMultiplier() { return isActive(EffectType.SLOW) ? SlowEffect.SPEED_MULTIPLIER : 1.0; }
     public void tick() {
         active.values().forEach(TimedEffect::tick);
         active.values().removeIf(effect -> effect.remaining() == 0);
