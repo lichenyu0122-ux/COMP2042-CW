@@ -26,7 +26,7 @@ class PoisonCoinTest {
         assertNull(session.poisonCoin());
     }
 
-    @Test void shortSnakeKeepsItsHead() {
+    @Test void shortSnakeKeepsOneBodySegment() {
         GameSession session = new GameSession(new Game(8, 8, true, 'N'));
         Snake snake = session.snake();
         snake.shrink(100);

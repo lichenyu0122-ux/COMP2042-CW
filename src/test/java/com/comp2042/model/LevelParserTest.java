@@ -19,13 +19,25 @@ class LevelParserTest {
         assertEquals(1, level.walls().size());
     }
 
-    @Test void rejectsInvalidMaps() {
+    @Test void rejectsWrongRowCount() {
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("rows: 3", "rows: 4")));
+    }
+
+    @Test void reportsUnknownCellsWithTheirLineNumber() {
         IllegalArgumentException unknown = assertThrows(IllegalArgumentException.class,
                 () -> parser.parse(VALID.replace("....\n#...", "..?.\n#...")));
         assertTrue(unknown.getMessage().contains("line 8"));
+    }
+
+    @Test void rejectsBlockedStartingPosition() {
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("....\n#...", "..#.\n#...")));
+    }
+
+    @Test void rejectsTargetAboveFreeCellCount() {
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("target: 2", "target: 11")));
+    }
+
+    @Test void rejectsNonPositiveSpeed() {
         assertThrows(IllegalArgumentException.class, () -> parser.parse(VALID.replace("speed: 180", "speed: -1")));
     }
 

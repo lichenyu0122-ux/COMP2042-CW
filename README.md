@@ -1,19 +1,61 @@
 # COMP2042 Snake
 
-GitHub: https://github.com/lichenyu0122-ux/COMP2042-CW
+## GitHub
 
-## Run
+https://github.com/lichenyu0122-ux/COMP2042-CW
 
-Use JDK 25. On Windows, run `.\mvnw.cmd javafx:run` from this folder. On macOS or Linux, run `./mvnw javafx:run`. Run `clean verify` instead of `javafx:run` to execute the tests.
+## Compilation instructions
 
-## Play
+1. Install JDK 25 and select it as the project SDK. The code targets Java 21 bytecode, but JavaFX 25.0.1 contains Java 23 bytecode, so a Java 21 runtime cannot launch this dependency. JDK 25 is the version used to verify this project.
+2. From the project root, run `.\mvnw.cmd clean verify` on Windows or `./mvnw clean verify` on macOS or Linux. The Maven Wrapper downloads Maven and the dependencies on first use. This builds the application and runs the JUnit tests.
+3. Run `.\mvnw.cmd javafx:run` on Windows or `./mvnw javafx:run` on macOS or Linux. In IntelliJ, open the project directory containing `pom.xml` and set the Maven runner JDK to 25.
 
-Choose Easy, Normal or Hard, then choose Grassland, Maze or Hourglass. Use the arrow keys to move, `P` to pause or resume, `Tab` to restart, and `Esc` to return to the menu.
+## Implemented and working properly
 
-Levels are loaded from `src/main/resources/levels/`. Grassland starts without walls and needs 10 food pickups; Maze has passages and needs 15; Hourglass has narrow gates and needs 20. The level files define the map and base speed. Add another `.level` file and list it in `levels/index.txt` to add a level without changing Java code.
+- **Maintenance:** The code is grouped into `model`, `controller`, and `view` packages. Direction input rejects immediate reversals; reset clears score, snake state, effects, turns, poison, and generated obstacles. Coin placement avoids the snake and walls. Git line endings are normalized by `.gitattributes`.
+- **Three selectable levels:** `src/main/resources/levels/` contains Grassland (no preset walls, 10 pickups, 200 ms base tick), Maze (walls, 15 pickups, 180 ms), and Hourglass (narrow gates, 20 pickups, 150 ms). These are progressively faster at the same difficulty. A level is described by `name`, `target`, `speed`, `cols`, `rows`, and a dot/hash map. Add a `.level` file and register it in `levels/index.txt` to add another level.
+- **Difficulty:** The menu offers Easy, Normal, and Hard. On the three levels they apply 0.8x, 1.0x, and 1.25x movement rate. All level borders are lethal without Ghost, including Easy, so the Ghost power-up has a distinct purpose. The legacy game constructor without a level retains its original Easy wraparound behavior.
+- **Rewards and penalties:** Regular food is worth 5 points, Gold 15, Rainbow temporarily increases movement rate, and Silver adds obstacles when no wall or poison is present. Silver is therefore unavailable in Maze and Hourglass, and while a poison coin is on Grassland. A purple `!` poison coin appears alongside normal food, removes up to two body segments while preserving at least one, and deducts 10 points without going below zero. Poison does not reduce target progress.
+- **Timed effects:** Blue `G` grants 20 moves of Ghost, allowing passage through preset walls and board edges, but not through the snake's body. Cyan `S` grants one Shield for up to 20 moves; after it absorbs a lethal hit, movement pauses until the player selects a valid turn. Orange Slow halves movement rate for eight moves. Collecting the same effect refreshes its duration; different effects can coexist. The HUD shows the level, target, points, and active effect durations.
+- **Controls:** Arrow keys turn, `P` pauses or resumes, `Tab` restarts, and `Esc` returns to the menu.
 
-Blue coins marked G grant 20 moves of Ghost: the snake can pass through static walls and wrap across the board edge, but hitting its own body still ends the game. Cyan coins marked S give one shield against a lethal collision for up to 20 moves. When the shield absorbs a hit, movement pauses until you choose a valid new direction. Orange coins halve movement speed for eight moves. Picking up the same effect refreshes its duration, while different effects can run together. Purple poison marked ! is a separate hazard beside the normal food; it removes up to two body segments and deducts 10 pts, stopping at zero. Target progress does not change. The HUD shows the level, target and remaining effect durations.
+## Implemented but not working properly
 
-## Verify
+No reproducible defect is currently known in the implemented level and effect rules. The JUnit suite covers the core logic; a final manual playthrough in the submission environment is still needed to check rendering and keyboard focus. The menu still obtains `ViewManager` through `Main`'s static reference; this works in the current startup path but makes isolated menu testing harder. Changing FXML construction was deferred because it would require a separate UI regression check.
 
-Run `.\mvnw.cmd clean verify` on Windows or `./mvnw clean verify` on macOS or Linux. The JUnit tests cover level parsing, map access, collisions, effect expiry, poison and scoring.
+## Features not implemented
+
+The selected scope is the three levels and their item effects. No planned gameplay feature in that scope is unfinished.
+
+## New Java classes
+
+| Location | Classes and purpose |
+| --- | --- |
+| `src/main/java/com/comp2042/controller/` | `DirectionInput` validates turns and handles the shield recovery turn. |
+| `src/main/java/com/comp2042/model/` | `Level`, `LevelParser`, and `LevelCatalog` hold, validate, and load map-driven stages. `GameSession` owns one round and reset. `CoinSpawnPolicy` selects item types separately from the UI. |
+| `src/main/java/com/comp2042/model/` | `EffectType`, `TimedEffect`, `EffectManager`, `PowerUpFactory`, `GhostEffect`, `ShieldEffect`, and `SlowEffect` define and manage move-based effects. |
+| `src/main/java/com/comp2042/model/` | `PoisonCoin`, `ShieldCoin`, and `SlowCoin` add the penalty and two new pickups. |
+
+## Modified Java classes
+
+| Location | Change and reason |
+| --- | --- |
+| `src/main/java/com/comp2042/Main.java` and `view/ViewManager.java` | Start and switch between menu and game windows using the reorganized packages. |
+| `src/main/java/com/comp2042/controller/MainMenuController.java` | Offer difficulty and level choices and create the selected round. |
+| `src/main/java/com/comp2042/controller/GameController.java` | Connect input, timer, item spawning, and view updates to `GameSession`; use one random generator and stop after a shield save until a turn. |
+| `src/main/java/com/comp2042/view/GameView.java` | Render level walls, distinct item markers, scores, and effect notices. |
+| `src/main/java/com/comp2042/model/Game.java` and `model/Snake.java` | Apply level targets and speeds, handle collisions and Ghost wrapping, and limit poison shrinkage. |
+| `src/main/java/com/comp2042/model/Obstacle.java` and `model/Coin.java` | Restore level walls on reset and choose only free cells for new rewards and obstacles. |
+| `src/main/java/com/comp2042/model/BlueCoin.java`, `GoldCoin.java`, `RainbowCoin.java`, and `SilverCoin.java` | Keep the original coin variants working in the new package structure and scoring system. |
+
+## Unexpected problems and resolutions
+
+- The original Maven Wrapper download URL and a Windows path containing parentheses prevented startup; the wrapper URL and launcher handling were corrected.
+- JavaFX FXML version and runtime mismatches prevented the menu from loading; dependency versions and FXML declarations were aligned.
+- Ghost initially failed to pass walls because collision handling and effect duration did not agree; movement and effect tests now cover wall crossing and expiry.
+- A Shield could be consumed without giving the player a chance to turn; it now pauses the game on the safe cell. The `P` key resumes only ordinary pauses.
+- Windows CRLF changes obscured meaningful Git diffs; `.gitattributes` now specifies line endings for source and resources.
+
+## Verification
+
+Run `clean verify` as above. JUnit covers level parsing, reachability, ordering, score targets, round reset, obstacle restoration, direction reversal, collisions, item spawning, poison boundaries, and timed effects. Before submission, manually play all three levels and verify the Ghost, Shield, Slow, and Poison HUD behavior in the packaged project.
