@@ -59,7 +59,7 @@ public class Coin {
     }
 
     /**
-     * Provides a copy of the coin position.
+     * The coin's grid cell. Changing the returned Point does not move the coin.
      *
      * @return a copy of the board coordinate
      */
@@ -68,7 +68,7 @@ public class Coin {
     }
 
     /**
-     * Provides the value credited when this reward is collected.
+     * The points added when the snake collects a regular coin.
      *
      * @return the reward point value
      */

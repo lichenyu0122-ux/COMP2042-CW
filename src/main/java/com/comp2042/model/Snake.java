@@ -135,7 +135,7 @@ public class Snake {
     }
 
     /**
-     * Reads the collision state.
+     * Tells the game whether the last move was lethal. A shield can undo that move.
      *
      * @return true after a lethal move
      */
@@ -179,7 +179,7 @@ public class Snake {
     }
 
     /**
-     * Reads the head sprite rotation.
+     * The rotation used when drawing the snake head.
      *
      * @return the head direction in degrees
      */

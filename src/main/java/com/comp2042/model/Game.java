@@ -9,7 +9,6 @@ public class Game {
     private int score;
     private int maxScore;
     private final int initialMaxScore;
-    private final boolean fixedTarget;
     private double multiplier;
     private int scorePoints;
     private double speed;
@@ -64,9 +63,7 @@ public class Game {
         this.powerUp = powerUp;
         width = x;
         height = y;
-        maxScore = x * y - 2;
-        fixedTarget = targetScore > 0;
-        if (fixedTarget) maxScore = targetScore;
+        maxScore = targetScore > 0 ? targetScore : x * y - 2;
         initialMaxScore = maxScore;
         if (speedMillis > 0) {
             double difficultyRate = switch (difficulty) {
@@ -103,16 +100,7 @@ public class Game {
     }
 
     /**
-     * Reduces the dynamic target after obstacles are added; fixed level targets are unchanged.
-     *
-     * @param num the number of added obstacles used to adjust a dynamic target
-     */
-    public void decMaxScore(int num) {
-        if (!fixedTarget) this.maxScore -= (num - 1);
-    }
-
-    /**
-     * Reads the board width.
+     * The board width used for movement and placing pickups.
      *
      * @return the number of columns
      */
@@ -121,7 +109,7 @@ public class Game {
     }
 
     /**
-     * Reads the board height.
+     * The board height used for movement and placing pickups.
      *
      * @return the number of rows
      */
@@ -139,7 +127,7 @@ public class Game {
     }
 
     /**
-     * Reads the display size of one board cell.
+     * How large each grid cell is when the board is drawn.
      *
      * @return the cell size in pixels
      */
@@ -159,7 +147,7 @@ public class Game {
     /**
      * Subtracts a penalty without reducing points below zero.
      *
-     * @param amount the nonnegative point penalty or requested obstacle count
+     * @param amount points to take away; must not be negative
      * @throws IllegalArgumentException if the penalty is negative
      */
     public void deductPoints(int amount) {
@@ -168,7 +156,7 @@ public class Game {
     }
 
     /**
-     * Reads the awarded point total, including penalties.
+     * The points shown to the player after rewards and poison penalties.
      *
      * @return the current nonnegative point total
      */
@@ -177,20 +165,20 @@ public class Game {
     }
 
     /**
-     * Reads the number of rewards required to win.
+     * The reward count needed to win. A selected level sets this target.
      *
      * @return the current target count
      */
     public int getTargetScore() { return maxScore; }
     /**
-     * Reads how many reward coins have been collected.
+     * How many reward coins have been eaten; poison does not reduce this count.
      *
      * @return the reward count toward the target
      */
     public int getScore() { return score; }
 
     /**
-     * Checks whether special pickups are enabled.
+     * Whether the coin generator may spawn special pickups.
      *
      * @return true when special pickups can spawn
      */
@@ -199,7 +187,7 @@ public class Game {
     }
 
     /**
-     * Reads the movement timer rate derived from difficulty and level speed.
+     * The starting movement rate after difficulty is applied. Temporary effects can change the actual rate.
      *
      * @return moves per second
      */
@@ -208,7 +196,7 @@ public class Game {
     }
 
     /**
-     * Checks legacy border wrapping; level games disable it.
+     * Whether crossing an edge wraps the snake. Selected levels disable wrapping.
      *
      * @return true if crossing an edge wraps the snake
      */

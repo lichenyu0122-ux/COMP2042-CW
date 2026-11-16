@@ -22,7 +22,7 @@ public final class Level {
      * @param columns the board width
      * @param rows the board height
      * @param target the required reward count
-     * @param speedMillis base tick duration, or zero for difficulty defaults
+     * @param speedMillis base time between moves, in milliseconds
      * @param walls the level wall coordinates
      */
     public Level(String name, int columns, int rows, int target, int speedMillis, Set<Point> walls) {
@@ -41,37 +41,37 @@ public final class Level {
     }
 
     /**
-     * Reads the level name.
+     * The name shown in the level menu and score bar.
      *
      * @return the menu name
      */
     public String name() { return name; }
     /**
-     * Reads the level columns.
+     * The number of grid cells across this level.
      *
      * @return the board width in cells
      */
     public int columns() { return columns; }
     /**
-     * Reads the level rows.
+     * The number of grid cells from top to bottom.
      *
      * @return the board height in cells
      */
     public int rows() { return rows; }
     /**
-     * Reads the level target.
+     * How many reward coins the player must collect to win.
      *
      * @return the required number of rewards
      */
     public int target() { return target; }
     /**
-     * Reads the level speedMillis.
+     * The base time between moves in milliseconds. A smaller value makes the snake faster.
      *
      * @return the base movement interval in milliseconds
      */
     public int speedMillis() { return speedMillis; }
     /**
-     * Reads the level walls.
+     * Returns the cells marked as walls in the map. The points are copied so callers cannot change the level.
      *
      * @return a deep copy of wall coordinates
      */

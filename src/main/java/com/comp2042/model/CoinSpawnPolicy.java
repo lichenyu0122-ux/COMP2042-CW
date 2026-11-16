@@ -9,21 +9,21 @@ public final class CoinSpawnPolicy {
      * Pickup types that the controller can spawn after collecting a reward.
      */
     public enum CoinType {
-        /** Ordinary reward. */
+        /** A regular coin with no extra effect. */
         REGULAR,
-        /** Higher-value reward. */
+        /** A gold coin worth more points than a regular one. */
         GOLD,
-        /** Reward with a movement-rate bonus. */
+        /** A rainbow coin that speeds up movement until the next reward. */
         RAINBOW,
-        /** Reward that activates Ghost. */
+        /** A blue coin that lets the snake cross walls and board edges. */
         BLUE,
-        /** Reward that generates obstacles. */
+        /** When silver is collected, the controller adds walls. Silver cannot spawn while poison or walls are already on the board. */
         SILVER,
-        /** Reward that activates Shield. */
+        /** A shield coin that can save the snake from one lethal move. */
         SHIELD,
-        /** Reward that activates Slow. */
+        /** An orange coin that temporarily slows the snake. */
         SLOW,
-        /** Separate hazardous pickup. */
+        /** A purple hazard spawned alongside a regular reward; GameSession applies its penalty. */
         POISON
     }
 
@@ -31,7 +31,7 @@ public final class CoinSpawnPolicy {
     }
 
     /**
-     * Chooses a pickup type; disabled power-ups and blocked silver yield a regular coin.
+     * Maps a random roll to a coin type. Power-ups off always gives REGULAR; a blocked silver roll also gives REGULAR.
      *
      * @param powerUp whether special pickups are enabled
      * @param roll the controller-generated selection roll

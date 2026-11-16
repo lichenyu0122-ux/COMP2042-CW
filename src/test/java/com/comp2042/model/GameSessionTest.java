@@ -21,7 +21,6 @@ class GameSessionTest {
         session.obstacle().getObstacles().add(new Point(0, 0));
         game.addPoints(15);
         game.incScore();
-        game.decMaxScore(3);
 
         session.reset();
 

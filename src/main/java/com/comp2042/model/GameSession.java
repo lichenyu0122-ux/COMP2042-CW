@@ -44,7 +44,7 @@ public final class GameSession {
     }
 
     /**
-     * Provides the score and board rules for this round.
+     * The same Game object that holds this round's score, target, and difficulty.
      *
      * @return the game configuration and score
      */
@@ -53,7 +53,7 @@ public final class GameSession {
     }
 
     /**
-     * Provides the wall state for this round.
+     * The walls used for collision checks and coin placement in this round.
      *
      * @return the round obstacle collection
      */
@@ -62,13 +62,13 @@ public final class GameSession {
     }
 
     /**
-     * Reads the selected level.
+     * The chosen map, or null when the game uses no level file.
      *
      * @return the level, or null for a game without a preset level
      */
     public Level level() { return level; }
     /**
-     * Provides the currently active timed effects.
+     * The active Shield, Slow, and Ghost effects for this round.
      *
      * @return the effect manager for this round
      */
@@ -119,7 +119,7 @@ public final class GameSession {
     }
 
     /**
-     * Applies a pickup at the head after a successful move.
+     * Checks the head after a safe move. Reward coins advance the target; poison shortens the snake and deducts points.
      *
      * @return the collected pickup kind, or NONE
      */
@@ -149,7 +149,7 @@ public final class GameSession {
     }
 
     /**
-     * Provides the snake in the current round.
+     * The snake that moves during this round; reset replaces it with a new one.
      *
      * @return the current snake
      */
@@ -158,7 +158,7 @@ public final class GameSession {
     }
 
     /**
-     * Provides the ordinary reward currently on the board.
+     * The reward coin on the board, separate from any poison coin.
      *
      * @return the current reward coin
      */
@@ -167,7 +167,7 @@ public final class GameSession {
     }
 
     /**
-     * Provides the separate poison pickup, if present.
+     * The poison coin on the board, if one has spawned.
      *
      * @return the poison coin, or null
      */

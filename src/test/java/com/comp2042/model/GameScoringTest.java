@@ -37,13 +37,16 @@ class GameScoringTest {
     }
 
     @Test
-    void resetRestoresOriginalWinThreshold() {
-        Game game = new Game(2, 2, false, 'N');
-        game.decMaxScore(2);
+    void resetClearsProgressButKeepsTheLevelTarget() {
+        Game game = new Game(8, 8, false, 'N', 2, 200);
         game.incScore();
-        assertTrue(game.gameWon());
+        game.addPoints(5);
 
         game.resetScore();
+
+        assertEquals(0, game.getScore());
+        assertEquals(0, game.getScorePoints());
+        assertEquals(2, game.getTargetScore());
         game.incScore();
         assertFalse(game.gameWon());
         game.incScore();

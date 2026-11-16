@@ -49,7 +49,7 @@ public class ViewManager {
     }
 
     /**
-     * Provides the menu window.
+     * The menu window to show again when the player leaves a round.
      *
      * @return the menu stage
      */
@@ -68,7 +68,7 @@ public class ViewManager {
     }
 
     /**
-     * Provides the game window created by initGameStage.
+     * The current game window, which is created when a round starts.
      *
      * @return the game stage, or null before initialization
      */

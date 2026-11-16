@@ -24,11 +24,11 @@ public class Obstacle {
     }
 
     /**
-     * Adds random walls only on free cells, up to the board wall limit.
+     * Adds walls to free cells. The total stops at 50 or when no free cells remain.
      *
      * @param snek the current snake
      * @param coin the current coin
-     * @param amount the nonnegative point penalty or requested obstacle count
+     * @param amount how many walls to try to add; zero or less adds none
      */
     public void newObstacles(Snake snek, Coin coin, int amount) {
         if (amount <= 0 || obstacles.size() >= 50) {
@@ -57,9 +57,9 @@ public class Obstacle {
     }
 
     /**
-     * Exposes the mutable wall list used by collision and rendering.
+     * Returns the wall list used for collision checks and drawing. Callers can edit it.
      *
-     * @return the live list of wall coordinates
+     * @return the current, mutable list of wall coordinates
      */
     public ArrayList<Point> getObstacles() {
         return obstacles;
@@ -75,7 +75,7 @@ public class Obstacle {
     /**
      * Replaces current walls with copies of the level walls.
      *
-     * @param level the selected level, or null for a game without a preset level
+     * @param level the level whose walls should be loaded
      */
     public void load(Level level) {
         reset();

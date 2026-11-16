@@ -26,7 +26,7 @@ public final class EffectManager {
      */
     public boolean isActive(EffectType type) { return active.containsKey(type); }
     /**
-     * Reads the remaining moves for one effect.
+     * How many moves an effect has left; returns zero if it is not active.
      *
      * @param type the effect kind
      * @return remaining moves, or zero when inactive

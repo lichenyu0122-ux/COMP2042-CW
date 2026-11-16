@@ -14,7 +14,7 @@ final class DirectionInput {
     private boolean needsTurnAfterShield;
 
     /**
-     * Reads the direction used for the next movement tick.
+     * The arrow direction the snake will follow on the next tick.
      *
      * @return the current arrow key
      */

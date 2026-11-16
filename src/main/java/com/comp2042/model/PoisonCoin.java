@@ -3,7 +3,7 @@ package com.comp2042.model;
 import java.awt.Point;
 
 /**
- * Separate hazardous pickup that reduces body length and points without advancing the target.
+ * A purple hazard placed apart from the reward coin. When the snake eats it, GameSession applies the body and point penalties; the target count stays the same.
  */
 public final class PoisonCoin extends Coin {
     /**
@@ -41,7 +41,7 @@ public final class PoisonCoin extends Coin {
     PoisonCoin(Point position) { super(position); }
 
     /**
-     * Provides zero points because poison is a penalty.
+     * Poison itself awards no points; GameSession handles the penalty.
      *
      * @return zero
      */

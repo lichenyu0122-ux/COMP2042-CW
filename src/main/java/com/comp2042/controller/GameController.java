@@ -206,7 +206,6 @@ public class GameController {
             rainbowBonus = tempCoin.getSpeedBonus();
         } else if (coin.getClass().equals(SilverCoin.class)){
             obstacle.newObstacles(snek, coin, random.nextInt(game.getWidth() * game.getHeight()/ 20) +3);
-            game.decMaxScore(obstacle.getObstacles().size());
         }
     }
     private void newCoin() {
