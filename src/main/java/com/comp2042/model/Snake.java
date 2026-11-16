@@ -3,6 +3,9 @@ package com.comp2042.model;
 import java.awt.Point;
 import java.util.ArrayList;
 
+/**
+ * Tracks head and body positions and resolves wall, border, and self collisions.
+ */
 public class Snake {
     private boolean dead = false;
     private final Point head = new Point();
@@ -17,6 +20,14 @@ public class Snake {
     private ArrayList<Point> previousBody;
     private int previousDirection;
 
+    /**
+     * Places a one-segment snake at the board center facing left.
+     *
+     * @param x the board width in cells
+     * @param y the board height in cells
+     * @param noBorder the noBorder
+     * @param obstacle the current wall state
+     */
     public Snake(int x, int y, boolean noBorder, Obstacle obstacle) {
         this.obstacle = obstacle;
         this.noBorder = noBorder;
@@ -26,6 +37,12 @@ public class Snake {
         this.gy = y;
     }
 
+    /**
+     * Advances one cell and marks lethal border, wall, or self collisions.
+     *
+     * @param dir U, D, L, or R movement direction
+     * @throws IllegalArgumentException if dir is not U, D, L, or R
+     */
     public void move(char dir) {
         previousHead = new Point(head);
         previousDirection = snakeDir;
@@ -57,6 +74,12 @@ public class Snake {
         }
     }
 
+    /**
+     * Chooses the straight-body sprite orientation at the given body index.
+     *
+     * @param bodyCount the body segment index
+     * @return the sprite rotation in degrees
+     */
     public int getBodyDir(int bodyCount) {
         if (bodyCount == 0) {
             return 0;
@@ -67,6 +90,12 @@ public class Snake {
         }
     }
 
+    /**
+     * Keeps the added tail segment for a reward, but removes it otherwise.
+     *
+     * @param coin the current coin
+     * @return true if the head is on the supplied coin
+     */
     public boolean ateCoin(Coin coin) {
         if (!head.equals(coin.getPos()) || coin instanceof PoisonCoin) {
             body.remove(0);
@@ -78,23 +107,47 @@ public class Snake {
         return head.getX() < 0 || head.getY() < 0 || head.getX() >= gx || head.getY() >= gy;
     }
 
+    /**
+     * Checks whether the head currently overlaps a body segment.
+     *
+     * @return true on a self collision
+     */
     public boolean hitSelf() {
         return body.contains(head);
     }
 
+    /**
+     * Provides a new list of body positions.
+     *
+     * @return a list copy of the body positions
+     */
     public ArrayList<Point> getBody() {
         return new ArrayList<>(body);
     }
 
+    /**
+     * Provides a copy of the head position.
+     *
+     * @return a copy of the head coordinate
+     */
     public Point getHead() {
         return new Point(head);
     }
 
+    /**
+     * Reads the collision state.
+     *
+     * @return true after a lethal move
+     */
     public boolean getDead() {
         return dead;
     }
 
-    /** Cancels a lethal move when a shield absorbs the collision. */
+    /**
+     * Restores the state before a lethal move absorbed by a shield.
+     *
+     * @throws IllegalStateException if there is no lethal move to restore
+     */
     public void undoDeath() {
         if (!dead || previousHead == null) throw new IllegalStateException("No lethal move to undo");
         head.setLocation(previousHead);
@@ -104,16 +157,32 @@ public class Snake {
         dead = false;
     }
 
+    /**
+     * Removes up to the requested tail segments while keeping one body segment.
+     *
+     * @param segments the nonnegative number of segments to remove
+     * @throws IllegalArgumentException if segments is negative
+     */
     public void shrink(int segments) {
         if (segments < 0) throw new IllegalArgumentException("segments must be non-negative");
         int removed = Math.max(0, Math.min(segments, body.size() - 1));
         body.subList(0, removed).clear();
     }
 
+    /**
+     * Enables or disables wall and edge crossing; self collision still applies.
+     *
+     * @param active whether Ghost wall and edge crossing is active
+     */
     public void setGhostMode(boolean active) {
         ghostMode = active;
     }
 
+    /**
+     * Reads the head sprite rotation.
+     *
+     * @return the head direction in degrees
+     */
     public int getSnakeDir() {
         return snakeDir;
     }

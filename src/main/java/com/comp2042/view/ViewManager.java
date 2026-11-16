@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Creates the menu and game windows and switches between them.
+ */
 public class ViewManager {
 
     private Stage primaryStage = new Stage();
@@ -18,9 +21,15 @@ public class ViewManager {
 
     private Image snakeLogo = new Image("resources/views/res/SnakeLogoWhite.png");
 
+    /**
+     * Creates a window manager with a menu stage.
+     */
     public ViewManager() {
     }
 
+    /**
+     * Loads the FXML menu and displays its window.
+     */
     public void initalizeMainMenu() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -39,10 +48,18 @@ public class ViewManager {
         primaryStage.show();
     }
 
+    /**
+     * Provides the menu window.
+     *
+     * @return the menu stage
+     */
     public Stage getPrimaryStage() {
         return primaryStage;
     }
 
+    /**
+     * Creates a new game window with the snake icon.
+     */
     public void initGameStage() {
         gameStage = new Stage();
         gameStage.setTitle("Snake Game");
@@ -50,10 +67,18 @@ public class ViewManager {
         gameStage.setResizable(false);
     }
 
+    /**
+     * Provides the game window created by initGameStage.
+     *
+     * @return the game stage, or null before initialization
+     */
     public Stage getGameStage() {
         return gameStage;
     }
 
+    /**
+     * Shows the menu window and closes the game window.
+     */
     public void showMainMenu() {
         primaryStage.show();
         gameStage.close();

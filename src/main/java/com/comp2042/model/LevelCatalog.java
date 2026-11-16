@@ -7,10 +7,19 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Collections;
 
-/** Reads the level index and maps. Adding a level needs only a map and index entry. */
+/**
+ * Loads the ordered level index and map resources from the classpath.
+ */
 public final class LevelCatalog {
     private LevelCatalog() {}
 
+    /**
+     * Reads registered map resources in index order and rejects duplicate or invalid levels.
+     *
+     * @return an unmodifiable map keyed by level name
+     * @throws IllegalArgumentException if the index or a map is invalid
+     * @throws IllegalStateException if a required resource cannot be read
+     */
     public static Map<String, Level> load() {
         try {
             String index = read("levels/index.txt");

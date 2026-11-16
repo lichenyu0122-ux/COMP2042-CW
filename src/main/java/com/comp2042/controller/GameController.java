@@ -24,6 +24,9 @@ import javafx.util.Duration;
 
 import java.util.Random;
 
+/**
+ * Connects keyboard input and the animation timer to the round state and game view.
+ */
 public class GameController {
     private static final int POISON_NOTICE_TICKS = 12;
     private static final String POISON_NOTICE = "POISON: -2 body, -10 pts";
@@ -40,6 +43,13 @@ public class GameController {
     private double rainbowBonus;
     private int poisonNoticeTicks;
 
+    /**
+     * Creates the timer and connects the round, view, and window manager.
+     *
+     * @param session the round state
+     * @param gameView the board view
+     * @param viewManager the window manager
+     */
     public GameController(GameSession session, GameView gameView, ViewManager viewManager) {
         this.session = session;
         this.gameView = gameView;
@@ -106,6 +116,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Processes movement, pause, restart, display-size, and menu keys.
+     *
+     * @param event the pressed key event
+     */
     public void handle(KeyEvent event) {
         Snake snek = session.snake();
         Coin coin = session.coin();

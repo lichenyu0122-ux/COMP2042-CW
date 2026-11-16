@@ -34,6 +34,9 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Draws the board, pickups, snake, score, and timed-effect notices using JavaFX.
+ */
 public class GameView {
 
     private static final Color GRID_COLOR = Color.web("feffe4");
@@ -44,12 +47,30 @@ public class GameView {
     private final ImageView imageTurn = new ImageView(new Image("resources/views/res/snaketurnleft.png"));
     private final ImageView imageTail = new ImageView(new Image("resources/views/res/snaketail.png"));
 
+    /**
+     * Canvas containing the game board.
+     */
     public Canvas gridCanvas;
+    /**
+     * Drawing context for the board canvas.
+     */
     public GraphicsContext gc;
 
+    /**
+     * Loss message overlay.
+     */
     public Label gameOverLabel;
+    /**
+     * Win message overlay.
+     */
     public Label gameWonLabel;
+    /**
+     * Level progress and points display.
+     */
     public Label scoreLabel;
+    /**
+     * Timed effects and temporary notice display.
+     */
     public Label effectLabel;
     private boolean gameOverVis = false;
     private boolean gameWonVis = false;
@@ -62,16 +83,35 @@ public class GameView {
     private boolean fullsize = false;
     private int[][] turnArray;
 
+    /**
+     * Creates a view for a game without an associated level.
+     *
+     * @param game the game rules and score
+     */
     public GameView(Game game) {
         this(game, null);
     }
 
+    /**
+     * Creates a view that can show the selected level in the score display.
+     *
+     * @param game the game rules and score
+     * @param level the selected level, or null for a game without a preset level
+     */
     public GameView(Game game, Level level) {
         this.game = game;
         this.level = level;
         this.turnArray = new int[game.getWidth()][game.getHeight()];
     }
 
+    /**
+     * Creates board and status controls and draws the initial state.
+     *
+     * @param snek the current snake
+     * @param coin the current coin
+     * @param poison the separate poison coin, or null
+     * @param obstacle the current wall state
+     */
     public void makeScene(Snake snek, Coin coin, PoisonCoin poison, Obstacle obstacle) {
         gridCanvas = new Canvas(game.getWidth() * game.getMultiplier(),
                 game.getHeight() * game.getMultiplier());
@@ -106,6 +146,16 @@ public class GameView {
         effectLabel.setMouseTransparent(true);
     }
 
+    /**
+     * Resizes the board and labels and redraws the current state.
+     *
+     * @param fullScreen whether to enter full-screen mode
+     * @param primaryStage the stage supplied by JavaFX
+     * @param obstacle the current wall state
+     * @param snek the current snake
+     * @param coin the current coin
+     * @param poison the separate poison coin, or null
+     */
     public void scaleToFullscreen(boolean fullScreen, Stage primaryStage, Obstacle obstacle,
                                   Snake snek, Coin coin, PoisonCoin poison) {
         primaryStage.setFullScreen(fullScreen);
@@ -137,6 +187,15 @@ public class GameView {
         drawGrid(coin, poison, snek, obstacle, gc);
     }
 
+    /**
+     * Redraws walls, both pickup types, and the snake on the supplied canvas context.
+     *
+     * @param coin the current coin
+     * @param poison the separate poison coin, or null
+     * @param snek the current snake
+     * @param obstacle the current wall state
+     * @param gc the canvas drawing context
+     */
     public void drawGrid(Coin coin, PoisonCoin poison, Snake snek, Obstacle obstacle, GraphicsContext gc) {
         gc.setFill(GRID_COLOR);
         gc.fillRect(0, 0, gridCanvas.getWidth(), gridCanvas.getHeight());
@@ -252,6 +311,13 @@ public class GameView {
         gc.drawImage(rotatedImage, (point.x * game.getMultiplier()) * fullScale, (point.y * game.getMultiplier()) * fullScale, game.getMultiplier() * fullScale * fullScale, game.getMultiplier() * fullScale * fullScale);
     }
 
+    /**
+     * Records the corner sprite to use at the snake head when it turns.
+     *
+     * @param snek the current snake
+     * @param lastKey the previous arrow key
+     * @param key the newly accepted arrow key
+     */
     public void turnDir(Snake snek, KeyCode lastKey, KeyCode key) {
         if ((lastKey == KeyCode.LEFT && key == KeyCode.UP) || (lastKey == KeyCode.DOWN && key == KeyCode.RIGHT)) {
             turnArray[(int) snek.getHead().getX()][(int) snek.getHead().getY()] = 2;
@@ -264,10 +330,18 @@ public class GameView {
         } else turnArray[(int) snek.getHead().getX()][(int) snek.getHead().getY()] = 0;
     }
 
+    /**
+     * Clears stored corner sprite positions after a restart.
+     */
     public void resetTurns() {
         turnArray = new int[game.getWidth()][game.getHeight()];
     }
 
+    /**
+     * Shows or hides the loss label according to snake state.
+     *
+     * @param snek the current snake
+     */
     public void gameOver(Snake snek) {
         if (snek.getDead() && !gameOverVis) {
             gameOverVis = true;
@@ -278,6 +352,9 @@ public class GameView {
         }
     }
 
+    /**
+     * Shows or hides the win label according to target progress.
+     */
     public void gameWon() {
         if (game.gameWon() && !gameWonVis) {
             gameWonVis = true;
@@ -288,14 +365,28 @@ public class GameView {
         }
     }
 
+    /**
+     * Refreshes the level progress and point display.
+     */
     public void updateScoreLabel() {
         scoreLabel.setText(scoreText());
     }
 
+    /**
+     * Refreshes effect durations without an additional notice.
+     *
+     * @param effects the currently active effects
+     */
     public void updateEffectLabel(EffectManager effects) {
         updateEffectLabel(effects, "");
     }
 
+    /**
+     * Refreshes effect durations and an optional notice.
+     *
+     * @param effects the currently active effects
+     * @param notice an optional HUD notice; empty means none
+     */
     public void updateEffectLabel(EffectManager effects, String notice) {
         StringBuilder text = new StringBuilder();
         if (!notice.isBlank()) text.append(notice);

@@ -4,16 +4,32 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Stores fixed and generated wall cells for a round.
+ */
 public class Obstacle {
     private ArrayList<Point> obstacles = new ArrayList<>();
     private int x;
     private int y;
 
+    /**
+     * Creates empty wall state for the given board dimensions.
+     *
+     * @param x the board width in cells
+     * @param y the board height in cells
+     */
     public Obstacle(int x, int y) {
        this.x = x;
        this.y = y;
     }
 
+    /**
+     * Adds random walls only on free cells, up to the board wall limit.
+     *
+     * @param snek the current snake
+     * @param coin the current coin
+     * @param amount the nonnegative point penalty or requested obstacle count
+     */
     public void newObstacles(Snake snek, Coin coin, int amount) {
         if (amount <= 0 || obstacles.size() >= 50) {
             return;
@@ -40,14 +56,27 @@ public class Obstacle {
         obstacles.addAll(freeCells.subList(0, count));
     }
 
+    /**
+     * Exposes the mutable wall list used by collision and rendering.
+     *
+     * @return the live list of wall coordinates
+     */
     public ArrayList<Point> getObstacles() {
         return obstacles;
     }
 
+    /**
+     * Clears all current wall cells.
+     */
     public void reset() {
         obstacles.clear();
     }
 
+    /**
+     * Replaces current walls with copies of the level walls.
+     *
+     * @param level the selected level, or null for a game without a preset level
+     */
     public void load(Level level) {
         reset();
         level.walls().forEach(point -> obstacles.add(new Point(point)));

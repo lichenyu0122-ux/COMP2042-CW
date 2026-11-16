@@ -6,8 +6,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/** Parses the documented header and dot/hash grid format. */
+/**
+ * Validates a header and dot/hash grid and converts them into a level.
+ */
 public final class LevelParser {
+    /** Creates a parser for the level header and map format. */
+    public LevelParser() {
+    }
+    /**
+     * Validates the required headers and map cells, including the initial snake position.
+     *
+     * @param source the complete level file text
+     * @return the parsed immutable level
+     * @throws IllegalArgumentException if headers, dimensions, cells, spawn position, or target are invalid
+     */
     public Level parse(String source) {
         String[] lines = source.strip().split("\\R");
         Map<String, String> headers = new HashMap<>();

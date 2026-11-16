@@ -16,7 +16,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.Map;
 
+/**
+ * Reads the selected level and difficulty from the menu and starts a game round.
+ */
 public class MainMenuController {
+    /** Creates the controller loaded by the menu FXML. */
+    public MainMenuController() {
+    }
 
     private static final int X_VALUE = 20;
     private static final int Y_VALUE = 20;
@@ -41,6 +47,9 @@ public class MainMenuController {
         levelBox.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Creates the selected round and displays its game window.
+     */
     public void handleStart() {
         viewManager.initGameStage();
 
@@ -84,10 +93,22 @@ public class MainMenuController {
         gamePane.getChildren().addAll(boardPane, gameView.scoreLabel);
     }
 
+    /**
+     * Exposes the window manager used by the menu.
+     *
+     * @return the current view manager
+     */
     public ViewManager getViewManager() {
         return viewManager;
     }
 
+    /**
+     * Maps the selected menu label to its difficulty code.
+     *
+     * @param choice the selected difficulty label
+     * @return E, N, or H
+     * @throws IllegalArgumentException if the choice is null or unsupported
+     */
     static char difficultyCode(String choice) {
         if (choice == null) {
             throw new IllegalArgumentException("Select a difficulty before starting");
@@ -100,10 +121,20 @@ public class MainMenuController {
         };
     }
 
+    /**
+     * Returns the legacy default board width.
+     *
+     * @return the default number of columns
+     */
     public static int getxValue() {
         return X_VALUE;
     }
 
+    /**
+     * Returns the legacy default board height.
+     *
+     * @return the default number of rows
+     */
     public static int getyValue() {
         return Y_VALUE;
     }

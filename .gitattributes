@@ -8,9 +8,14 @@
 *.txt text eol=lf
 *.ps1 text eol=crlf
 .gitignore text eol=lf
+.gitattributes text eol=lf
 mvnw text eol=lf
 mvnw.cmd text eol=crlf
 *.png binary
 *.ttf binary
 *.wav binary
 *.pdf binary
+*.html text eol=lf
+*.js text eol=lf
+*.svg text eol=lf
+Javadoc/legal/* text eol=lf
