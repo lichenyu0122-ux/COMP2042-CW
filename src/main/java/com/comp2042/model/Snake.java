@@ -25,7 +25,7 @@ public class Snake {
      *
      * @param x the board width in cells
      * @param y the board height in cells
-     * @param noBorder the noBorder
+     * @param noBorder whether crossing an edge wraps the snake when Ghost is inactive
      * @param obstacle the current wall state
      */
     public Snake(int x, int y, boolean noBorder, Obstacle obstacle) {
@@ -117,9 +117,9 @@ public class Snake {
     }
 
     /**
-     * Provides a new list of body positions.
+     * Returns a new list containing the snake's existing Point objects.
      *
-     * @return a list copy of the body positions
+     * @return a new list; changing one of its points also changes the snake
      */
     public ArrayList<Point> getBody() {
         return new ArrayList<>(body);

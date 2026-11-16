@@ -150,15 +150,15 @@ public class GameView {
      * Resizes the board and labels and redraws the current state.
      *
      * @param fullScreen whether to enter full-screen mode
-     * @param primaryStage the stage supplied by JavaFX
+     * @param gameStage the game window to resize
      * @param obstacle the current wall state
      * @param snek the current snake
      * @param coin the current coin
      * @param poison the separate poison coin, or null
      */
-    public void scaleToFullscreen(boolean fullScreen, Stage primaryStage, Obstacle obstacle,
+    public void scaleToFullscreen(boolean fullScreen, Stage gameStage, Obstacle obstacle,
                                   Snake snek, Coin coin, PoisonCoin poison) {
-        primaryStage.setFullScreen(fullScreen);
+        gameStage.setFullScreen(fullScreen);
 
         double hudHeight = fullScreen ? 48 : 32;
         scoreLabel.setMinHeight(hudHeight);
@@ -188,13 +188,13 @@ public class GameView {
     }
 
     /**
-     * Redraws walls, both pickup types, and the snake on the supplied canvas context.
+     * Redraws the walls, reward, optional poison and snake on the board.
      *
      * @param coin the current coin
      * @param poison the separate poison coin, or null
      * @param snek the current snake
      * @param obstacle the current wall state
-     * @param gc the canvas drawing context
+     * @param gc the view's board graphics context
      */
     public void drawGrid(Coin coin, PoisonCoin poison, Snake snek, Obstacle obstacle, GraphicsContext gc) {
         gc.setFill(GRID_COLOR);

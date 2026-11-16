@@ -10,6 +10,7 @@ public final class PowerUpFactory {
      *
      * @param type the effect kind
      * @return a new timed effect of that type
+     * @throws NullPointerException if type is null
      */
     public static TimedEffect create(EffectType type) {
         return switch (type) {

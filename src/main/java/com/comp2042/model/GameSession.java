@@ -101,7 +101,7 @@ public final class GameSession {
      * Moves the snake, applies Ghost and Shield, and advances effect durations.
      *
      * @param direction U, D, L, or R movement direction
-     * @return whether movement was safe, shielded, or lethal
+     * @return MOVED for a safe move, SHIELDED if a shield saved it, or DEAD
      * @throws IllegalArgumentException if direction is not U, D, L, or R
      */
     public MoveResult move(char direction) {

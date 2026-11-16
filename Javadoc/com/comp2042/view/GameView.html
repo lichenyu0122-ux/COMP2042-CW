@@ -187,7 +187,7 @@ loadScripts(document, 'script');</script>
  <a href="../model/Obstacle.html" title="class in com.comp2042.model">Obstacle</a>&nbsp;obstacle,
  javafx.scene.canvas.GraphicsContext&nbsp;gc)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Redraws walls, both pickup types, and the snake on the supplied canvas context.</div>
+<div class="block">Redraws the walls, reward, optional poison and snake on the board.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#gameOver(com.comp2042.model.Snake)" class="member-name-link">gameOver</a><wbr>(<a href="../model/Snake.html" title="class in com.comp2042.model">Snake</a>&nbsp;snek)</code></div>
@@ -214,7 +214,7 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#scaleToFullscreen(boolean,javafx.stage.Stage,com.comp2042.model.Obstacle,com.comp2042.model.Snake,com.comp2042.model.Coin,com.comp2042.model.PoisonCoin)" class="member-name-link">scaleToFullscreen</a><wbr>(boolean&nbsp;fullScreen,
- javafx.stage.Stage&nbsp;primaryStage,
+ javafx.stage.Stage&nbsp;gameStage,
  <a href="../model/Obstacle.html" title="class in com.comp2042.model">Obstacle</a>&nbsp;obstacle,
  <a href="../model/Snake.html" title="class in com.comp2042.model">Snake</a>&nbsp;snek,
  <a href="../model/Coin.html" title="class in com.comp2042.model">Coin</a>&nbsp;coin,
@@ -384,7 +384,7 @@ loadScripts(document, 'script');</script>
 <h3>scaleToFullscreen</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">scaleToFullscreen</span><wbr><span class="parameters">(boolean&nbsp;fullScreen,
- javafx.stage.Stage&nbsp;primaryStage,
+ javafx.stage.Stage&nbsp;gameStage,
  <a href="../model/Obstacle.html" title="class in com.comp2042.model">Obstacle</a>&nbsp;obstacle,
  <a href="../model/Snake.html" title="class in com.comp2042.model">Snake</a>&nbsp;snek,
  <a href="../model/Coin.html" title="class in com.comp2042.model">Coin</a>&nbsp;coin,
@@ -393,7 +393,7 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>fullScreen</code> - whether to enter full-screen mode</dd>
-<dd><code>primaryStage</code> - the stage supplied by JavaFX</dd>
+<dd><code>gameStage</code> - the game window to resize</dd>
 <dd><code>obstacle</code> - the current wall state</dd>
 <dd><code>snek</code> - the current snake</dd>
 <dd><code>coin</code> - the current coin</dd>
@@ -411,14 +411,14 @@ loadScripts(document, 'script');</script>
  <a href="../model/Snake.html" title="class in com.comp2042.model">Snake</a>&nbsp;snek,
  <a href="../model/Obstacle.html" title="class in com.comp2042.model">Obstacle</a>&nbsp;obstacle,
  javafx.scene.canvas.GraphicsContext&nbsp;gc)</span></div>
-<div class="block">Redraws walls, both pickup types, and the snake on the supplied canvas context.</div>
+<div class="block">Redraws the walls, reward, optional poison and snake on the board.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>coin</code> - the current coin</dd>
 <dd><code>poison</code> - the separate poison coin, or null</dd>
 <dd><code>snek</code> - the current snake</dd>
 <dd><code>obstacle</code> - the current wall state</dd>
-<dd><code>gc</code> - the canvas drawing context</dd>
+<dd><code>gc</code> - the view's board graphics context</dd>
 </dl>
 </div>
 </section>

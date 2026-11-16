@@ -17,7 +17,7 @@ public class Main extends Application {
     /**
      * Initializes the menu when JavaFX starts the application.
      *
-     * @param primaryStage the stage supplied by JavaFX
+     * @param primaryStage the JavaFX stage, unused because ViewManager creates the menu window
      */
     @Override
     public void start(Stage primaryStage) {
